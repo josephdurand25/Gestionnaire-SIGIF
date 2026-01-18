@@ -3,7 +3,7 @@ import { getDataToMemorized, removeDataToMemorized } from '../Utils/LocalDataMan
 import { jwtDecode } from 'jwt-decode';
 
     const api = axios.create({
-        baseURL: 'http://localhost:3002',
+        baseURL: 'http://localhost:3004',
         headers: {
             'Content-Type': 'application/json',
         },
