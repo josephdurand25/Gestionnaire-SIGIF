@@ -14,6 +14,7 @@ import StudentDetails from './Pages/Contents/students/StudentDetail';
 import MatiereContentLayout from './Pages/Layouts/MatiereLayout';
 import MatieresList from './Pages/Contents/Matieres/MatieresList';
 import MatiereDetails from './Pages/Contents/Matieres/MatiereDetails';
+import MatiereForm from './Pages/Contents/Matieres/MatiereForm';
 
 const App: React.FC = () => {
   const location = useLocation();
@@ -44,38 +45,10 @@ const App: React.FC = () => {
               {/* Route imbriquée pour la gestion des cours */}
               <Route path="matieres" element={<MatiereContentLayout />}>
                 <Route index element={<MatieresList />} />
-                <Route path='create' element={<CourseForm />} />
-                <Route path=':id/edit' element={<CourseForm />} />
+                <Route path='create' element={<MatiereForm />} />
+                <Route path=':id/edit' element={<MatiereForm />} />
                 <Route path=':id' element={<MatiereDetails />} />
               </Route>
-              {/* <Route path="courses" element={<CoursesContentLayout />}>
-                <Route index element={<CoursesList />} />
-                <Route path='create' element={<CourseForm />} />
-                <Route path=':id/edit' element={<CourseForm />} />
-                <Route path=':id' element={<CourseDetails />} />
-              </Route> */}
-            
-              
-              {/* Route imbriquée pour la gestion des comptes */}
-              {/* <Route path="accounts" element={<AccountsManagerLayout />}>
-                <Route index element={<AccountsManager />} />
-                <Route path="autorisations" element={<PermissionManagement />} />
-                <Route path="users" element={<AccountsManager />} />
-                <Route path="users/:id" element={<DetailsUserCard />} />
-                <Route path="agents" element={<AgentsManager />} />
-                <Route path="partenaires" element={<Parteners />} />
-                <Route path="professionnels" element={<Professionnel />} />
-              </Route> */}
-              {/* Route imbriquée pour la gestion des comptes */}
-              {/* <Route path="students" element={<AccountsManagerLayout />}>
-                <Route index element={<AccountsManager />} />
-                <Route path="autorisations" element={<PermissionManagement />} />
-                <Route path="users" element={<AccountsManager />} />
-                <Route path="users/:id" element={<DetailsUserCard />} />
-                <Route path="agents" element={<AgentsManager />} />
-                <Route path="partenaires" element={<Parteners />} />
-                <Route path="professionnels" element={<Professionnel />} />
-              </Route> */}
 
               
               {/* <Route path="*" element={<Page404 />} /> */}
