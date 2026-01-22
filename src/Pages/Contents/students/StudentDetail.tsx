@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { useStudents } from '../../Contexts/StudentsContext';
 import clsx from 'clsx';
-import DeleteConfirmModal from './Modals/DeleteConfirmModal';
+import { useStudents } from '../../../Contexts/StudentsContext';
+import DeleteConfirmModal from '../Modals/DeleteConfirmModal';
 
 const StudentDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -71,11 +71,11 @@ const StudentDetails: React.FC = () => {
 
   const handleToggleStatus = async () => {
     if (student.id) {
-      if (student.statut === 'actif') {
-        await actions.toggleStudentStatus(student.id, 'inactif');
+      if (student.statut_academique === 'inscrit') {
+        await actions.toggleStudentStatus(student.id, 'non_inscrit');
         actions.fetchStudentById(Number(student.id));
       }else {
-        await actions.toggleStudentStatus(student.id, 'actif');
+        await actions.toggleStudentStatus(student.id, 'inscrit');
         actions.fetchStudentById(Number(student.id));
       }
     }
@@ -225,7 +225,7 @@ const StudentDetails: React.FC = () => {
               <dl className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
                 <div>
                   <dt className="text-sm font-medium text-gray-500">Filière</dt>
-                  <dd className="mt-1 text-sm text-gray-900">{student.filiere}</dd>
+                  <dd className="mt-1 text-sm text-gray-900">{student.filiere_code}</dd>
                 </div>
                 <div>
                   <dt className="text-sm font-medium text-gray-500">Niveau</dt>
@@ -241,8 +241,8 @@ const StudentDetails: React.FC = () => {
                 </div>
                 <div>
                   <dt className="text-sm font-medium text-gray-500">Date d'inscription</dt>
-                  <dd className="mt-1 text-sm text-gray-900">
-                    {new Date(student.date_inscription).toLocaleDateString('fr-FR')}
+                  <dd className="mt-1 text-sm text-gray-900 font-bold">
+                    {student.date_inscription && new Date(student.date_inscription).toLocaleDateString('fr-FR')}
                   </dd>
                 </div>
               </dl>
@@ -257,7 +257,7 @@ const StudentDetails: React.FC = () => {
                 <div>
                   <dt className="text-sm font-medium text-gray-500">Date de naissance</dt>
                   <dd className="mt-1 text-sm text-gray-900">
-                    {new Date(student.date_naissance).toLocaleDateString('fr-FR')}
+                    {student.date_naissance && new Date(student.date_naissance).toLocaleDateString('fr-FR')}
                     {student.age && <span className="text-gray-500 ml-2">({student.age} ans)</span>}
                   </dd>
                 </div>
@@ -297,7 +297,7 @@ const StudentDetails: React.FC = () => {
                 <div>
                   <dt className="text-sm font-medium text-gray-500">Rue</dt>
                   <dd className="mt-1 text-sm text-gray-900">
-                    {student.adresse_rue || <span className="text-gray-400">Non renseigné</span>}
+                    {student.adresse_complete ?? <span className="text-gray-400">Non renseigné</span>}
                   </dd>
                 </div>
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
@@ -308,11 +308,11 @@ const StudentDetails: React.FC = () => {
                   <div>
                     <dt className="text-sm font-medium text-gray-500">Code postal</dt>
                     <dd className="mt-1 text-sm text-gray-900">
-                      {student.adresse_code_postal || <span className="text-gray-400">-</span>}
+                      {student.adresse_postale || <span className="text-gray-400">-</span>}
                     </dd>
                   </div>
                   <div>
-                    <dt className="text-sm font-medium text-gray-500">Pays</dt>
+                    <dt className="text-sm font-medium text-gray-500">Nationalité</dt>
                     <dd className="mt-1 text-sm text-gray-900">
                       {student.adresse_pays || <span className="text-gray-400">-</span>}
                     </dd>
@@ -479,6 +479,9 @@ const StudentDetails: React.FC = () => {
                       Note Examen
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Note tp
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Note Finale
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -493,14 +496,17 @@ const StudentDetails: React.FC = () => {
                   {state.studentNotes.map((note: any) => (
                     <tr key={note.id} className="hover:bg-gray-50">
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm font-medium text-gray-900">{note.cours_nom}</div>
-                        <div className="text-sm text-gray-500">{note.cours_code}</div>
+                        <div className="text-sm font-medium text-gray-900">{note.matiere_nom}</div>
+                        <div className="text-sm text-gray-500">{note.matiere_code}</div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                         {note.note_cc ? Number(note.note_cc).toFixed(2) : '-'}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                         {note.note_examen ? Number(note.note_examen).toFixed(2) : '-'}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {note.note_tp ? Number(note.note_tp).toFixed(2) : '-'}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span className={clsx(

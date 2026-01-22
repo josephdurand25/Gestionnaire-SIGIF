@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import clsx from 'clsx';
-import { Button } from '../../components/Button';
-import type { IMatiere, IMatiereFilters } from '../../../types/ICours';
+import type { IMatiere, IMatiereFilters, IMatiereWithDetails } from '../../../types/IMatiere';
+import { useMatieres } from '../../../Contexts/MatiereContext';
 import type { JourSemaine, TypeCours } from '../../../types/IGeneral';
-import { useMatieres } from '../../../Contexts/MatiereContext.tsx';
-
+import { Button } from '../../components/Button';
 const MatieresList: React.FC = () => {
   const { state, actions } = useMatieres();
   const [filters, setFilters] = useState<IMatiereFilters>({});
@@ -13,7 +12,7 @@ const MatieresList: React.FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    actions.fetchMatieres(1, 10, filters);
+    actions.fetchMatieres(1, 10);
   }, []);
 
   const handleFilterChange = (key: keyof IMatiereFilters, value: any) => {
@@ -22,7 +21,7 @@ const MatieresList: React.FC = () => {
   };
 
   const handleApplyFilters = () => {
-    actions.fetchMatieres(1, state.pagination.limit, filters);
+    actions.fetchMatieres(1, state.pagination.limit);
   };
 
   const handleResetFilters = () => {
@@ -31,7 +30,7 @@ const MatieresList: React.FC = () => {
   };
 
   const handlePageChange = (newPage: number) => {
-    actions.fetchMatieres(newPage, state.pagination.limit, filters);
+    actions.fetchMatieres(newPage, state.pagination.limit);
   };
 
   const handleEdit = (matiere: IMatiere) => {
@@ -53,8 +52,6 @@ const MatieresList: React.FC = () => {
       case 'CM': return 'bg-blue-100 text-blue-800';
       case 'TD': return 'bg-green-100 text-green-800';
       case 'TP': return 'bg-purple-100 text-purple-800';
-      case 'PROJET': return 'bg-orange-100 text-orange-800';
-      case 'STAGE': return 'bg-gray-100 text-gray-800';
       default: return 'bg-gray-100 text-gray-800';
     }
   };
@@ -63,9 +60,7 @@ const MatieresList: React.FC = () => {
     const labels: Record<TypeCours, string> = {
       'CM': 'Cours Magistral',
       'TD': 'Travaux Dirigés',
-      'TP': 'Travaux Pratiques',
-      'PROJET': 'Projet',
-      'STAGE': 'Stage'
+      'TP': 'Travaux Pratiques'
     };
     return labels[type] || type;
   };
@@ -180,8 +175,8 @@ const MatieresList: React.FC = () => {
               </label>
               <select
                 title='jour'
-                value={filters.jour_par_defaut || ''}
-                onChange={(e) => handleFilterChange('jour_par_defaut', e.target.value as JourSemaine)}
+                value={filters.jour || ''}
+                onChange={(e) => handleFilterChange('jour', e.target.value as JourSemaine)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
               >
                 <option value="">Tous</option>
@@ -201,8 +196,8 @@ const MatieresList: React.FC = () => {
               </label>
               <input
                 type="text"
-                value={filters.salle_par_defaut || ''}
-                onChange={(e) => handleFilterChange('salle_par_defaut', e.target.value)}
+                value={filters.salle_code || ''}
+                onChange={(e) => handleFilterChange('salle_code', e.target.value)}
                 placeholder="Code salle..."
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
               />
@@ -339,7 +334,7 @@ const MatieresList: React.FC = () => {
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span className={clsx(
                           'px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full',
-                          getTypeCoursColor(matiere.type_cours)
+                          getTypeCoursColor(matiere.type_cours as TypeCours)
                         )}>
                           {matiere.type_cours}
                         </span>
@@ -348,16 +343,16 @@ const MatieresList: React.FC = () => {
                         <div className="text-sm text-gray-900">
                           {matiere.ue_code}
                         </div>
-                        {matiere.ue_type && (
+                        {/* {matiere.ue_nom && (
                           <div className="text-xs text-gray-500">
-                            {matiere.ue_type}
+                            {matiere.ue_nom}
                           </div>
-                        )}
+                        )} */}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm text-gray-900">
-                          {matiere.enseignant_nom && matiere.enseignant_prenom
-                            ? `${matiere.enseignant_prenom} ${matiere.enseignant_nom}`
+                          { matiere?.enseignant_nom
+                            ? ` ${matiere.enseignant_nom}`
                             : '—'}
                         </div>
                         {matiere.enseignant_matricule && (
@@ -369,9 +364,9 @@ const MatieresList: React.FC = () => {
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm text-gray-900">
                           {formatHoraire(
-                            matiere.jour_par_defaut,
-                            matiere.heure_debut_par_defaut,
-                            matiere.heure_fin_par_defaut
+                            matiere.jour as JourSemaine,
+                            matiere.heure_debut,
+                            matiere.heure_fin
                           )}
                         </div>
                         {matiere.salle_nom && (
@@ -454,13 +449,15 @@ const MatieresList: React.FC = () => {
                   </div>
                   <div>
                     <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px">
-                      <button
-                        onClick={() => handlePageChange(state.pagination.page - 1)}
+                      <Button
+                        variant='perso'
+
+                        action={() => handlePageChange(state.pagination.page - 1)}
                         disabled={state.pagination.page === 1}
-                        className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50"
+                        supStyle="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50"
                       >
                         <i className="ri-arrow-left-s-line"></i>
-                      </button>
+                      </Button>
                       {[...Array(state.pagination.totalPages)].map((_, i) => (
                         <button
                           key={i + 1}

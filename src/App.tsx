@@ -3,14 +3,17 @@ import DashboardLayout from './Pages/Layouts/DashboardLayout';
 import { ToastProvider } from './Contexts/TaostContainer';
 import { useEffect } from 'react';
 import Dashboard from './Pages/Contents/Dashboard';
-import StudentsList from './Pages/Contents/StudentsList';
+import StudentsList from './Pages/Contents/students/StudentsList';
 import Statistics from './Pages/Contents/Statistics';
-import StudentForm from './Pages/Contents/FormDataStudent';
-import StudentDetails from './Pages/Contents/StudentDetail';
+import StudentForm from './Pages/Contents/students/FormDataStudent';
 import CoursesList from './Pages/Contents/Courses/List';
 import CoursesContentLayout from './Pages/Layouts/CourseLayout';
 import CourseForm from './Pages/Contents/Courses/Form';
 import CourseDetails from './Pages/Contents/Courses/Details';
+import StudentDetails from './Pages/Contents/students/StudentDetail';
+import MatiereContentLayout from './Pages/Layouts/MatiereLayout';
+import MatieresList from './Pages/Contents/Matieres/MatieresList';
+import MatiereDetails from './Pages/Contents/Matieres/MatiereDetails';
 
 const App: React.FC = () => {
   const location = useLocation();
@@ -39,12 +42,18 @@ const App: React.FC = () => {
               <Route path="students/edit/:id" element={<StudentForm />} />
               <Route path="students/statistics" element={<Statistics />} />
               {/* Route imbriquée pour la gestion des cours */}
-              <Route path="courses" element={<CoursesContentLayout />}>
+              <Route path="matieres" element={<MatiereContentLayout />}>
+                <Route index element={<MatieresList />} />
+                <Route path='create' element={<CourseForm />} />
+                <Route path=':id/edit' element={<CourseForm />} />
+                <Route path=':id' element={<MatiereDetails />} />
+              </Route>
+              {/* <Route path="courses" element={<CoursesContentLayout />}>
                 <Route index element={<CoursesList />} />
                 <Route path='create' element={<CourseForm />} />
                 <Route path=':id/edit' element={<CourseForm />} />
                 <Route path=':id' element={<CourseDetails />} />
-              </Route>
+              </Route> */}
             
               
               {/* Route imbriquée pour la gestion des comptes */}

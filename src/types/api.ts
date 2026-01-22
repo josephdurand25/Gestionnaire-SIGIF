@@ -1,7 +1,8 @@
-import type { ICours, ICoursWithEnrollments, StatutCours } from "./ICours";
+import type { ICours } from "./ICours";
 import type { ICarteData, IDocument, IPVData, IReleveData } from "./IDocuments";
-import type { IInscription, IInscriptionDetails, StatutInscription } from "./IEnrollment";
-import type { IGradeStatistics, INote, INoteDetails, SessionExamen } from "./INotes";
+import type { IInscription, IInscriptionDetails } from "./IEnrollment";
+import type { JourSemaine, Semestre } from "./IGeneral";
+import type { IGradeStatistics, INote, INoteDetails } from "./INotes";
 
 export interface Toast {
   id: string;
@@ -11,22 +12,118 @@ export interface Toast {
   duration?: number;
 }
 
+// ==========================================
+// API - RÉPONSES & REQUÊTES
+// ==========================================
+
 export type ApiErrorValidationResponse = {
-  success?: boolean;
-  status_code?: number;
-  message?: string;
-  errors?: Record<string, string>;
-}
+  success: false;
+  status_code: number;
+  message: string;
+  errors: Record<string, string>;
+};
 
 export type ApiErrorResponse = {
-  success?: boolean;
-  message?: string;
-  status_code?: number;
+  success: false;
+  status_code: number;
+  message: string;
   error?: string;
+};
+
+export type ApiError = ApiErrorValidationResponse | ApiErrorResponse;
+
+export type ApiResponseWithoutData = {
+  success: true;
+  status_code: number;
+  message?: string;
+};
+
+export type ApiResponseOk<T> = {
+  success: true;
+  status_code: number;
+  message?: string;
+  data: T;
+};
+
+export type ApiResponseOptional<T> = {
+  success: true;
+  status_code: number;
+  message?: string;
+  data?: T | null;
+};
+
+export type ApiResponse<T> = ApiResponseOk<T> | ApiError;
+
+export type PaginationParams = {
+  page?: number;
+  limit?: number;
+  sort_by?: string;
+  sort_order?: 'asc' | 'desc';
+};
+
+export type PaginationMeta = {
+  current_page: number;
+  per_page: number;
+  total: number;
+  total_pages: number;
+  from?: number;
+  to?: number;
+};
+
+export type PaginatedResponse<T> = ApiResponseOk<{
+  data: T[];
+  pagination: PaginationMeta;
+}>;
+
+export const HTTP_STATUS = {
+  OK: 200,
+  CREATED: 201,
+  ACCEPTED: 202,
+  NO_CONTENT: 204,
+  BAD_REQUEST: 400,
+  UNAUTHORIZED: 401,
+  FORBIDDEN: 403,
+  NOT_FOUND: 404,
+  CONFLICT: 409,
+  UNPROCESSABLE_ENTITY: 422,
+  TOO_MANY_REQUESTS: 429,
+  INTERNAL_SERVER_ERROR: 500,
+  NOT_IMPLEMENTED: 501,
+  BAD_GATEWAY: 502,
+  SERVICE_UNAVAILABLE: 503,
+} as const;
+
+export type HttpStatusCode = typeof HTTP_STATUS[keyof typeof HTTP_STATUS];
+
+// Type guards
+export function isApiSuccess<T>(response: ApiResponse<T>): response is ApiResponseOk<T> {
+  return response.success === true;
 }
-export type ApiError = ApiErrorValidationResponse | ApiErrorResponse
+
+export function isApiError(response: any): response is ApiError {
+  return response.success === false;
+}
+
+export function isValidationError(error: ApiError): error is ApiErrorValidationResponse {
+  return 'errors' in error && typeof error.errors === 'object';
+}
 
 
+export interface IPagination {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+}
+
+export interface IPaginationResult<T> {
+  data: T;
+  pagination: IPagination;
+}
+// export interface IPaginationResult<T> {
+//   data: T[];
+//   pagination: IPagination;
+// }
 
 export function isApiErrorResponse(data: any): data is ApiErrorResponse {
   return (
@@ -53,25 +150,6 @@ export function isApiErrorValidationResponse(data: any): data is ApiErrorValidat
     ))
   );
 }
-
-export type ApiResponseWithoutData<T> = {
-  success: boolean;
-  status_code?: number;
-  message?: string;
-};
-
-export type ApiResponse<T> = {
-  success: boolean;
-  status_code?: number;
-  message?: string;
-  data?: T;
-};
-export type ApiResponseOk<T> = {
-  success: boolean;
-  status_code: number;
-  message?: string;
-  data?: T | null;
-};
 
 export type TokenResponse = {
     access_token: string;
@@ -103,23 +181,10 @@ export interface User {
   [key: string]: any;
 }
 
-export type JourSemaine = 'Lundi' | 'Mardi' | 'Mercredi' | 'Jeudi' | 'Vendredi' | 'Samedi';
-export type Semestre = 'S1' | 'S2';
-export type NiveauEtude = 'L1' | 'L2' | 'L3' | 'M1' | 'M2' | 'Doctorat';
-
 // ==========================================
 // PAGINATION ET FILTRES
 // ==========================================
 
-export interface IPaginationResult<T> {
-  data: T[];
-  pagination: {
-    page: number;
-    limit: number;
-    total: number;
-    totalPages: number;
-  };
-}
 
 export interface ICoursFilters {
   filiere?: string;
@@ -153,7 +218,7 @@ export interface INoteFilters {
 export interface ICoursesState {
   courses: ICours[];
   selectedCourse: ICours | null;
-  coursesWithStats: ICoursWithEnrollments[];
+  // coursesWithStats: ICoursWithEnrollments[];
   processing: boolean;
   success: boolean;
   message: string | null;
@@ -282,15 +347,15 @@ export const obtenirMention = (note: number): string => {
   return 'Très Bien';
 };
 
-export const calculerMoyenneGenerale = (notes: INote[]): number => {
-  if (notes.length === 0) return 0;
+// export const calculerMoyenneGenerale = (notes: INote[]): number => {
+//   if (notes.length === 0) return 0;
   
-  const total = notes.reduce((sum, note) => sum + note.note_finale, 0);
-  return total / notes.length;
-};
+//   const total = notes.reduce((sum, note) => sum + note.note_finale, 0);
+//   return total / notes.length;
+// };
 
-export const calculerCreditsObtenus = (notes: INoteDetails[]): number => {
-  return notes
-    .filter(note => note.note_finale >= 10)
-    .reduce((sum, note) => sum + note.cours_credits, 0);
-};
+// export const calculerCreditsObtenus = (notes: INoteDetails[]): number => {
+//   return notes
+//     .filter(note => (note.note_finale && note.note_finale >= 10))
+//     .reduce((sum, note) => sum + note?.cours_credits, 0);
+// };

@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useReducer, useCallback, type ReactNode } from 'react';
-import type { ICours, ICoursWithEnrollments } from '../types/ICours';
+import type { ICours } from '../types/ICours';
 import type { ICoursesState, ICoursFilters, IPaginationResult } from '../types/api';
 import api from '../ConfigApp/apiConfigCommunication';
 

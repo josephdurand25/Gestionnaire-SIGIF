@@ -29,6 +29,16 @@ const DashboardLayout: React.FC = () => {
       icon: 'ri-dashboard-line' 
     },
     { 
+      name: 'Candidatures', 
+      href: '/candidats', 
+      icon: 'ri-user-line',
+      submenu: [
+        { name: 'Liste des candidatures', href: '/candidats' },
+        { name: 'Créer un candidature', href: '/candidats/create' },
+        { name: 'Statistiques', href: '/candidats/statistics' }
+      ]
+    },
+    { 
       name: 'Étudiants', 
       href: '/students', 
       icon: 'ri-user-line',
@@ -36,6 +46,26 @@ const DashboardLayout: React.FC = () => {
         { name: 'Liste des étudiants', href: '/students' },
         { name: 'Créer un étudiant', href: '/students/create' },
         { name: 'Statistiques', href: '/students/statistics' }
+      ]
+    },
+    { 
+      name: 'Academic resources', 
+      href: '/academic', 
+      icon: 'ri-user-line',
+      submenu: [
+        { name: 'Liste des étudiants', href: '/academic' },
+        { name: 'Créer un étudiant', href: '/academic/create' },
+        { name: 'Statistiques', href: '/academic/statistics' }
+      ]
+    },
+    { 
+      name: 'Matiere', 
+      href: '/matieres', 
+      icon: 'ri-book-line',
+      submenu: [
+        { name: 'Liste des matieres', href: '/matieres' },
+        { name: 'Créer un matieres', href: '/matieres/create' },
+        { name: 'Assigner des matieres', href: '/matieres/assign' }
       ]
     },
     { 

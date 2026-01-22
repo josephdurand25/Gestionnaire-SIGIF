@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useStudents } from '../../Contexts/StudentsContext';
+import { useStudents } from '../../../Contexts/StudentsContext';
 import clsx from 'clsx';
 import { useNavigate, useParams } from 'react-router';
 

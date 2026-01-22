@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { Spinner } from "./Spinner";
+import { Spinner } from "./Spiner";
 
 interface Props {
     size?: "small" | "medium" | "large";
@@ -13,7 +13,7 @@ interface Props {
         | "danger"
         | "success"
         | "sivathemedark"
-        | "perso"
+        | "perso" // c'est pour que seul les style supplémentaire soient pris en comptes
         | "sivatheme";
     icon?: string;
     iconTheme?: "accent" | "secondary" | "gray";

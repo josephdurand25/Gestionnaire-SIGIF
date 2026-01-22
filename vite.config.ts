@@ -4,19 +4,20 @@ import tailwindcss from '@tailwindcss/vite'
 
 // https://vite.dev/config/
 export default defineConfig({
+  base: '/app',
   plugins: [
     react(), 
     tailwindcss()
   ],
-  // server: {
-  //   host: '0.0.0.0',
-  //   port: 3001,
-  //   allowedHosts: ['sigif.dev'],
-  //   hmr: {
-  //     host: 'SIGIF.dev',
-  //     port: 3001,
-  //     protocol: 'ws'
-  //   },
-  //   cors: true,
-  // },
+  server: {
+    host: '0.0.0.0',
+    port: 3001,
+    allowedHosts: ['sigif-cm.com'],
+    hmr: {
+      host: 'sigif-cm.com',
+      port: 3001,
+      protocol: 'ws'
+    },
+    cors: true,
+  },
 })

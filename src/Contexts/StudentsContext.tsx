@@ -1,12 +1,12 @@
 import React, { createContext, useCallback, useContext, useReducer, useMemo, type ReactNode } from "react";
 import { handleApiError } from "../ConfigApp/errorHandle";
 import api from "../ConfigApp/apiConfigCommunication";
-import type { IEtudiant, IEtudiantFormRequest, IEtudiantUpdaterequest, StatutEtudiant, IEtudiantFilters, IPagination } from "../../server/src/types/Istudents";
-import type { ICours } from "../../server/src/types/ICours";
-import type { INote } from "../../server/src/types/INote";
+
 import { useNavigate } from "react-router";
 import { useToast } from "./TaostContainer";
-import type { ApiResponseOk } from "../types/api";
+import type { IEtudiant, IEtudiantCours, IEtudiantFilters, IEtudiantFormRequest, IEtudiantMoyenne, IEtudiantNote, IEtudiantUpdateRequest } from "../types/IStudent";
+import type { StatutAcademique } from "../types/IGeneral";
+import type { ApiResponseOk, IPaginationResult } from "../types/api";
 
 // ─────────────────────────── Types ─────────────────────────────
 
@@ -32,13 +32,15 @@ export interface ModalStates {
 
 export interface StatsData {
   total: number;
-  actifs: number;
-  inactifs: number;
+  inscrits: number;         // Aligné avec IEtudiantStatistics
+  non_inscrits: number;
   diplomes: number;
+  abandons: number;
+  exclus: number;
   parFiliere: Array<{
     filiere: string;
     total: number;
-    actifs: number;
+    inscrits: number;      // Aligné avec IEtudiantStatistics
     diplomes: number;
     abandons: number;
     age_moyen: number;
@@ -49,7 +51,7 @@ export interface StatsData {
 
 export interface StudentState {
   // Données principales
-  students: IEtudiant[] | [];
+  students: IEtudiant[];
   selectedStudent: IEtudiant | null;
   
   // Filtres et recherche
@@ -75,16 +77,15 @@ export interface StudentState {
   stats: StatsData | null;
   
   // Données associées
-  studentCourses: any[];
-  studentNotes: any[];
-  studentMoyenne: any;
+  studentCourses: IEtudiantCours[];
+  studentNotes: IEtudiantNote[];
+  studentMoyenne: IEtudiantMoyenne | null;
 }
 
 // ─────────────────────────── Actions ─────────────────────────────
 
 export type StudentAction =
-  | { type: "FETCH_STUDENTS_SUCCESS"; payload: {students: IEtudiant[], pagination: PaginationState} }
-  // | { type: "FETCH_STUDENTS_SUCCESS"; payload: IPaginationResult<IEtudiant> }
+  | { type: "FETCH_STUDENTS_SUCCESS"; payload: { students: IEtudiant[], pagination: PaginationState } }
   | { type: "SET_SELECTED_STUDENT"; payload: IEtudiant | null }
   | { type: "SET_FILTERS"; payload: IEtudiantFilters }
   | { type: "SET_SEARCH_TERM"; payload: string }
@@ -100,9 +101,9 @@ export type StudentAction =
   | { type: "SET_SORT_CONFIG"; payload: SortConfig }
   | { type: "TOGGLE_MODAL"; payload: { modal: keyof ModalStates; isOpen: boolean } }
   | { type: "SET_STATS"; payload: StatsData }
-  | { type: "SET_STUDENT_COURSES"; payload: any[] }
-  | { type: "SET_STUDENT_NOTES"; payload: any[] }
-  | { type: "SET_STUDENT_MOYENNE"; payload: any }
+  | { type: "SET_STUDENT_COURSES"; payload: IEtudiantCours[] }
+  | { type: "SET_STUDENT_NOTES"; payload: IEtudiantNote[] }
+  | { type: "SET_STUDENT_MOYENNE"; payload: IEtudiantMoyenne }
   | { type: "ADD_STUDENT"; payload: IEtudiant }
   | { type: "UPDATE_STUDENT"; payload: IEtudiant }
   | { type: "DELETE_STUDENT"; payload: number };
@@ -151,12 +152,7 @@ function studentReducer(state: StudentState, action: StudentAction): StudentStat
       return {
         ...state,
         students: action.payload.students,
-        pagination: {
-           page: action.payload?.pagination?.page ?? 1,
-            limit: action.payload?.pagination?.limit ?? 10,
-            total: action.payload?.pagination?.total ?? 0,
-            totalPages: action.payload?.pagination?.totalPages ?? 0
-        }
+        pagination: action.payload.pagination
       };
 
     case "SET_SELECTED_STUDENT":
@@ -239,18 +235,17 @@ function studentReducer(state: StudentState, action: StudentAction): StudentStat
       };
 
     case "UPDATE_STUDENT":
-      // Vérifier que action.payload existe et a un id
       if (!action.payload || typeof action.payload !== 'object' || !('id' in action.payload)) {
         console.error('UPDATE_STUDENT action payload invalide:', action.payload);
-        return state; // Retourner l'état inchangé
+        return state;
       }
       return {
         ...state,
         students: state.students.map(s =>
           s.id === action.payload.id ? action.payload : s
         ),
-        selectedStudent: state.selectedStudent?.id === action.payload.id
-          ? action.payload
+        selectedStudent: state.selectedStudent?.id === action.payload.id 
+          ? action.payload 
           : state.selectedStudent
       };
 
@@ -258,13 +253,13 @@ function studentReducer(state: StudentState, action: StudentAction): StudentStat
       return {
         ...state,
         students: state.students.filter(s => s.id !== action.payload),
-        selectedStudent: state.selectedStudent?.id === action.payload
-          ? null
-          : state.selectedStudent,
         pagination: {
           ...state.pagination,
-          total: state.pagination.total - 1
-        }
+          total: Math.max(0, state.pagination.total - 1)
+        },
+        selectedStudent: state.selectedStudent?.id === action.payload 
+          ? null 
+          : state.selectedStudent
       };
 
     default:
@@ -280,9 +275,9 @@ interface StudentContextType {
     fetchStudents: (page?: number, limit?: number) => Promise<void>;
     fetchStudentById: (id: number) => Promise<void>;
     createStudent: (data: IEtudiantFormRequest) => Promise<void>;
-    updateStudent: (id: number, data: IEtudiantUpdaterequest) => Promise<void>;
+    updateStudent: (id: number, data: IEtudiantUpdateRequest) => Promise<void>;
     deleteStudent: (id: number) => Promise<void>;
-    toggleStudentStatus: (id: number, statut?: StatutEtudiant) => Promise<void>;
+    toggleStudentStatus: (id: number, statut?: StatutAcademique) => Promise<void>;
     fetchStudentCourses: (id: number) => Promise<void>;
     fetchStudentNotes: (id: number) => Promise<void>;
     fetchStudentMoyenne: (id: number) => Promise<void>;
@@ -310,29 +305,41 @@ interface StudentProviderProps {
 
 export const StudentProvider: React.FC<StudentProviderProps> = ({ children }) => {
   const [state, dispatch] = useReducer(studentReducer, initialStudentState);
+  const { addToast } = useToast();
   const navigate = useNavigate();
-  const { addToast }= useToast()
 
   // ═══════════════════════ CRUD Operations ═══════════════════════
 
-  const fetchStudents = useCallback(async (page?: number, limit?: number) => {
+  const fetchStudents = useCallback(async (page = 1, limit = 10) => {
     dispatch({ type: "SET_PROCESSING", payload: true });
     dispatch({ type: "RESET_ERRORS" });
 
     try {
-      const params = new URLSearchParams();
-      params.append('page', (page || state.pagination.page).toString());
-      params.append('limit', (limit || state.pagination.limit).toString());
+      const params = new URLSearchParams({
+        page: page.toString(),
+        limit: limit.toString(),
+        ...state.filters,
+        ...(state.searchTerm && { search: state.searchTerm })
+      });
 
-      if (state.filters.filiere) params.append('filiere', state.filters.filiere);
-      if (state.filters.niveau) params.append('niveau', state.filters.niveau);
-      if (state.filters.statut) params.append('statut', state.filters.statut);
-      if (state.searchTerm) params.append('search', state.searchTerm);
+      // La réponse du serveur est ApiResponseOk<IPaginationResult<IEtudiant[]>>
+      const response = await api.get<ApiResponseOk<IPaginationResult<IEtudiant>>>(
+        `/api/students?${params}`
+      );
 
-      const result = await api.get(`/api/students?${params.toString()}`);
-      console.log('fetch students', result);
-      
-      dispatch({ type: "FETCH_STUDENTS_SUCCESS", payload: {students: result.data.data ?? [], pagination: result.data.pagination} });
+      // Extraire les données de la réponse API
+      const apiResult: IPaginationResult<IEtudiant> = response.data; 
+      const students = apiResult.data; 
+      const pagination = apiResult.pagination!;
+
+      console.log('result  students', students);
+      console.log('result  pagination', pagination);
+      console.log('result fetch students', apiResult);
+      dispatch({
+        type: "FETCH_STUDENTS_SUCCESS",
+        payload: { students, pagination }
+      });
+
       dispatch({ type: "SET_SUCCESS", payload: true });
     } catch (error: any) {
       handleApiError(
@@ -345,17 +352,17 @@ export const StudentProvider: React.FC<StudentProviderProps> = ({ children }) =>
     } finally {
       dispatch({ type: "SET_PROCESSING", payload: false });
     }
-  }, [state.pagination.page, state.pagination.limit, state.filters, state.searchTerm]);
+  }, [state.filters, state.searchTerm]);
 
   const fetchStudentById = useCallback(async (id: number) => {
     dispatch({ type: "SET_PROCESSING", payload: true });
     dispatch({ type: "RESET_ERRORS" });
 
     try {
-      const result = await api.get<IEtudiant>(`/api/students/${id}`);
-      console.log('result fint student', result);
+      const response = await api.get<ApiResponseOk<IEtudiant>>(`/api/students/${id}`);
+      const student = response.data;
       
-      dispatch({ type: "SET_SELECTED_STUDENT", payload: result.data });
+      dispatch({ type: "SET_SELECTED_STUDENT", payload: student });
       dispatch({ type: "SET_SUCCESS", payload: true });
     } catch (error: any) {
       handleApiError(
@@ -375,14 +382,20 @@ export const StudentProvider: React.FC<StudentProviderProps> = ({ children }) =>
     dispatch({ type: "RESET_ERRORS" });
 
     try {
-      // const nom
-      const created = await api.post<IEtudiant>('/api/students', data);
-      dispatch({ type: "ADD_STUDENT", payload: created.data });
+      const response = await api.post<ApiResponseOk<IEtudiant>>('/api/students', data);
+      const newStudent = response.data;
+
+      dispatch({ type: "ADD_STUDENT", payload: newStudent });
       dispatch({ type: "SET_SUCCESS", payload: true });
-      dispatch({ type: "SET_MESSAGE", payload: "Étudiant créé avec succès" });
-      await fetchStudents();
+      dispatch({ type: "SET_MESSAGE", payload: response.message || "Étudiant créé avec succès" });
+      
+      addToast({
+        type: 'success',
+        title: 'Succès',
+        message: `Étudiant ${newStudent.nom} ${newStudent.prenom} créé avec succès`
+      });
+      
       navigate('/students');
-      addToast({type: 'success', title: `Résultat de l'opération`, message: `Etudiant ${created.nom +' '+ created.prenom} créer avec succès`})
     } catch (error: any) {
       handleApiError(
         error,
@@ -394,20 +407,25 @@ export const StudentProvider: React.FC<StudentProviderProps> = ({ children }) =>
     } finally {
       dispatch({ type: "SET_PROCESSING", payload: false });
     }
-  }, [fetchStudents]);
+  }, [navigate, addToast]);
 
-  const updateStudent = useCallback(async (id: number, data: IEtudiantUpdaterequest) => {
+  const updateStudent = useCallback(async (id: number, data: IEtudiantUpdateRequest) => {
     dispatch({ type: "SET_PROCESSING", payload: true });
     dispatch({ type: "RESET_ERRORS" });
-    
+
     try {
-      const updated = await api.put<ApiResponseOk<IEtudiant>>(`/api/students/${id}`, data);
-      dispatch({ type: "UPDATE_STUDENT", payload: updated.data });
+      const response = await api.put<ApiResponseOk<IEtudiant>>(`/api/students/${id}`, data);
+      const updatedStudent = response.data;
+
+      dispatch({ type: "UPDATE_STUDENT", payload: updatedStudent });
       dispatch({ type: "SET_SUCCESS", payload: true });
-      dispatch({ type: "SET_MESSAGE", payload: "Étudiant modifié avec succès" });
-      navigate('/students');
-      dispatch({ type: "TOGGLE_MODAL", payload: { modal: 'studentForm', isOpen: false } });
-      addToast({type: 'success', title: `Résultat de l'opération`, message: `Etudiant ${updated?.data.nom +' '+updated?.data.prenom} mis à jour avec succès`})
+      dispatch({ type: "SET_MESSAGE", payload: response.message || "Étudiant mis à jour avec succès" });
+      
+      addToast({
+        type: 'success',
+        title: 'Succès',
+        message: `Étudiant ${updatedStudent.nom} ${updatedStudent.prenom} modifié avec succès`
+      });
     } catch (error: any) {
       handleApiError(
         error,
@@ -419,21 +437,27 @@ export const StudentProvider: React.FC<StudentProviderProps> = ({ children }) =>
     } finally {
       dispatch({ type: "SET_PROCESSING", payload: false });
     }
-  }, []);
-  
+  }, [addToast]);
+
   const deleteStudent = useCallback(async (id: number) => {
     dispatch({ type: "SET_PROCESSING", payload: true });
     dispatch({ type: "RESET_ERRORS" });
-    
+
     try {
       const foundStudent = state.students.find(e => e.id === id);
-      const nom_complet = foundStudent?.nom + ' '+ foundStudent?.prenom
-      await api.delete(`/api/students/${id}`);
+      const nom_complet = foundStudent ? `${foundStudent.nom} ${foundStudent.prenom}` : '';
+
+      const response = await api.delete<ApiResponseOk<any>>(`/api/students/${id}`);
+      
       dispatch({ type: "DELETE_STUDENT", payload: id });
       dispatch({ type: "SET_SUCCESS", payload: true });
-      dispatch({ type: "SET_MESSAGE", payload: "Étudiant supprimé avec succès" });
-      dispatch({ type: "TOGGLE_MODAL", payload: { modal: 'studentDelete', isOpen: false } });
-      addToast({type: 'success', title: `Résultat de l'opération`, message: `Etudiant ${nom_complet} supprimé avec succès`})
+      dispatch({ type: "SET_MESSAGE", payload: response.message || "Étudiant supprimé avec succès" });
+      
+      addToast({
+        type: 'success',
+        title: 'Succès',
+        message: `Étudiant ${nom_complet} supprimé avec succès`
+      });
     } catch (error: any) {
       handleApiError(
         error,
@@ -445,25 +469,33 @@ export const StudentProvider: React.FC<StudentProviderProps> = ({ children }) =>
     } finally {
       dispatch({ type: "SET_PROCESSING", payload: false });
     }
-  }, []);
+  }, [state.students, addToast]);
 
-  const toggleStudentStatus = useCallback(async (id: number, statut?: StatutEtudiant) => {
+  const toggleStudentStatus = useCallback(async (id: number, statut?: StatutAcademique) => {
     dispatch({ type: "SET_PROCESSING", payload: true });
     dispatch({ type: "RESET_ERRORS" });
-    
+
     try {
       const foundStudent = state.students.find(e => e.id === id);
-      const nom_complet = foundStudent?.nom + ' '+ foundStudent?.prenom
-      const updated = await api.post<IEtudiant>(`/api/students/${id}/toggle-statut`, { statut });
-      // Vérifier que la réponse est valide
-      if (!updated || !updated.data) {
-        throw new Error('Réponse invalide de l\'API');
-      }
-      dispatch({ type: "UPDATE_STUDENT", payload: updated.data });
-      dispatch({ type: "SET_SUCCESS", payload: true });
-      dispatch({ type: "SET_MESSAGE", payload: "Statut modifié avec succès" });
-      addToast({type: 'success', title: `Résultat de l'opération`, message: `Etudiant ${nom_complet} ${foundStudent?.statut === 'actif' ? 'désactivé': ''} ${foundStudent?.statut === 'inactif' ? 'activé': ''} avec succès`})
+      const nom_complet = foundStudent ? `${foundStudent.nom} ${foundStudent.prenom}` : '';
       
+      const response = await api.post<ApiResponseOk<IEtudiant>>(
+        `/api/students/${id}/toggle-statut`,
+        { statut }
+      );
+      
+      const updatedStudent = response.data;
+      
+      dispatch({ type: "UPDATE_STUDENT", payload: updatedStudent });
+      dispatch({ type: "SET_SUCCESS", payload: true });
+      dispatch({ type: "SET_MESSAGE", payload: response.message || "Statut modifié avec succès" });
+      
+      const statusMessage = foundStudent?.statut === 'ACTIF' ? 'désactivé' : 'activé';
+      addToast({
+        type: 'success',
+        title: 'Résultat de l\'opération',
+        message: `Étudiant ${nom_complet} ${statusMessage} avec succès`
+      });
     } catch (error: any) {
       handleApiError(
         error,
@@ -475,7 +507,7 @@ export const StudentProvider: React.FC<StudentProviderProps> = ({ children }) =>
     } finally {
       dispatch({ type: "SET_PROCESSING", payload: false });
     }
-  }, []);
+  }, [state.students, addToast]);
 
   // ═══════════════════════ Related Data ═══════════════════════
 
@@ -483,10 +515,11 @@ export const StudentProvider: React.FC<StudentProviderProps> = ({ children }) =>
     dispatch({ type: "SET_PROCESSING", payload: true });
 
     try {
-      const result = await api.get<ICours[]>(`/api/students/${id}/courses`);
-      console.log('result fetch Courses of students', result);
+      const response = await api.get<ApiResponseOk<IEtudiantCours[]>>(`/api/students/${id}/courses`);
+      const courses = response.data;
       
-      dispatch({ type: "SET_STUDENT_COURSES", payload: result });
+      console.log('Courses fetched:', courses);
+      dispatch({ type: "SET_STUDENT_COURSES", payload: courses });
     } catch (error: any) {
       handleApiError(
         error,
@@ -504,8 +537,11 @@ export const StudentProvider: React.FC<StudentProviderProps> = ({ children }) =>
     dispatch({ type: "SET_PROCESSING", payload: true });
 
     try {
-      const result = await api.get<INote[]>(`/api/students/${id}/notes`);
-      dispatch({ type: "SET_STUDENT_NOTES", payload: result });
+      const response = await api.get<ApiResponseOk<IEtudiantNote[]>>(`/api/students/${id}/notes`);
+      const notes = response.data;
+      
+      console.log('Notes fetched:', notes);
+      dispatch({ type: "SET_STUDENT_NOTES", payload: notes });
     } catch (error: any) {
       handleApiError(
         error,
@@ -523,8 +559,10 @@ export const StudentProvider: React.FC<StudentProviderProps> = ({ children }) =>
     dispatch({ type: "SET_PROCESSING", payload: true });
 
     try {
-      const result = await api.get(`/api/students/${id}/moyenne`);
-      dispatch({ type: "SET_STUDENT_MOYENNE", payload: result });
+      const response = await api.get<ApiResponseOk<IEtudiantMoyenne>>(`/api/students/${id}/moyenne`);
+      const moyenne = response.data;
+      
+      dispatch({ type: "SET_STUDENT_MOYENNE", payload: moyenne });
     } catch (error: any) {
       handleApiError(
         error,
@@ -542,9 +580,11 @@ export const StudentProvider: React.FC<StudentProviderProps> = ({ children }) =>
     dispatch({ type: "SET_PROCESSING", payload: true });
 
     try {
-      const stats = await api.get<StatsData>('/api/students/stats');
-      dispatch({ type: "SET_STATS", payload: stats  });
-      console.log('stat context',stats);
+      const response = await api.get<ApiResponseOk<StatsData>>('/api/students/stats');
+      const stats = response.data;
+      
+      dispatch({ type: "SET_STATS", payload: stats });
+      console.log('Stats context:', stats);
     } catch (error: any) {
       handleApiError(
         error,
@@ -563,11 +603,19 @@ export const StudentProvider: React.FC<StudentProviderProps> = ({ children }) =>
     dispatch({ type: "RESET_ERRORS" });
 
     try {
-      const rows = await api.post<IEtudiant[]>('/api/students/search/advanced', criteria);
-      dispatch({ type: "FETCH_STUDENTS_SUCCESS", payload: {
-        students: rows.data,
-        pagination: state.pagination
-      }});
+      const response = await api.post<ApiResponseOk<IEtudiant[]>>(
+        '/api/students/search/advanced',
+        criteria
+      );
+      const students = response.data;
+      
+      dispatch({
+        type: "FETCH_STUDENTS_SUCCESS",
+        payload: {
+          students: students,
+          pagination: state.pagination
+        }
+      });
     } catch (error: any) {
       handleApiError(
         error,
@@ -684,8 +732,7 @@ export const StudentProvider: React.FC<StudentProviderProps> = ({ children }) =>
 
 export const useStudents = (): StudentContextType => {
   const context = useContext(StudentContext);
-  // console.log('student in content exporter', state.studens);
-  
+
   if (!context) {
     throw new Error("useStudents doit être utilisé dans StudentProvider");
   }

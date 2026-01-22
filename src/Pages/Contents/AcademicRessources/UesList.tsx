@@ -1,78 +1,68 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import clsx from 'clsx';
+import type { IUniteEnseignementFilters } from '../../../types/ICours';
+import type { IUniteEnseignementWithDetails } from '../../../types/ICours';
 import { Button } from '../../components/Button';
-import type { IMatiere, IMatiereFilters } from '../../../types/ICours';
-import type { JourSemaine, TypeCours } from '../../../types/IGeneral';
-import { useMatieres } from '../../../Contexts/MatiereContext.tsx';
 
-const MatieresList: React.FC = () => {
-  const { state, actions } = useMatieres();
-  const [filters, setFilters] = useState<IMatiereFilters>({});
+const UEList: React.FC = () => {
+  const { state, actions } = useUE();
+  const [filters, setFilters] = useState<IUniteEnseignementFilters>({});
   const [showFilters, setShowFilters] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
-    actions.fetchMatieres(1, 10, filters);
+    actions.fetchUEs(1, 10, filters);
   }, []);
 
-  const handleFilterChange = (key: keyof IMatiereFilters, value: any) => {
+  const handleFilterChange = (key: keyof IUniteEnseignementFilters, value: any) => {
     const newFilters = { ...filters, [key]: value };
     setFilters(newFilters);
   };
 
   const handleApplyFilters = () => {
-    actions.fetchMatieres(1, state.pagination.limit, filters);
+    actions.fetchUEs(1, state.pagination.limit, filters);
   };
 
   const handleResetFilters = () => {
     setFilters({});
-    actions.fetchMatieres(1, state.pagination.limit);
+    actions.fetchUEs(1, state.pagination.limit);
   };
 
   const handlePageChange = (newPage: number) => {
-    actions.fetchMatieres(newPage, state.pagination.limit, filters);
+    actions.fetchUEs(newPage, state.pagination.limit, filters);
   };
 
-  const handleEdit = (matiere: IMatiere) => {
-    navigate(`/matieres/${matiere.code}/edit`);
+  const handleEdit = (ue: IUniteEnseignementWithDetails) => {
+    navigate(`/ue/${ue.code}/edit`);
   };
 
-  const handleDelete = (matiere: IMatiere) => {
-    if (window.confirm(`Êtes-vous sûr de vouloir supprimer la matière "${matiere.nom}" ?`)) {
-      actions.deleteMatiere(matiere.code);
+  const handleDelete = (ue: IUniteEnseignementWithDetails) => {
+    if (window.confirm(`Êtes-vous sûr de vouloir supprimer l'UE "${ue.nom}" ?`)) {
+      actions.deleteUE(ue.code!);
     }
   };
 
-  const handleViewDetails = (matiere: IMatiere) => {
-    navigate(`/matieres/${matiere.code}`);
+  const handleViewDetails = (ue: IUniteEnseignementWithDetails) => {
+    navigate(`/ue/${ue.code}`);
   };
 
-  const getTypeCoursColor = (type: TypeCours) => {
+  const getTypeUEColor = (type?: TypeUE) => {
     switch (type) {
-      case 'CM': return 'bg-blue-100 text-blue-800';
-      case 'TD': return 'bg-green-100 text-green-800';
-      case 'TP': return 'bg-purple-100 text-purple-800';
-      case 'PROJET': return 'bg-orange-100 text-orange-800';
-      case 'STAGE': return 'bg-gray-100 text-gray-800';
+      case 'OBLIGATOIRE': return 'bg-red-100 text-red-800';
+      case 'OPTIONNEL': return 'bg-blue-100 text-blue-800';
+      case 'TRANSVERSAL': return 'bg-green-100 text-green-800';
       default: return 'bg-gray-100 text-gray-800';
     }
   };
 
-  const getTypeCoursLabel = (type: TypeCours) => {
-    const labels: Record<TypeCours, string> = {
-      'CM': 'Cours Magistral',
-      'TD': 'Travaux Dirigés',
-      'TP': 'Travaux Pratiques',
-      'PROJET': 'Projet',
-      'STAGE': 'Stage'
+  const getTypeUELabel = (type?: TypeUE) => {
+    const labels: Record<TypeUE, string> = {
+      'OBLIGATOIRE': 'Obligatoire',
+      'OPTIONNEL': 'Optionnel',
+      'TRANSVERSAL': 'Transversal'
     };
-    return labels[type] || type;
-  };
-
-  const formatHoraire = (jour?: JourSemaine, debut?: string, fin?: string) => {
-    if (!jour || !debut || !fin) return '—';
-    return `${jour} ${debut} - ${fin}`;
+    return type ? labels[type] : '—';
   };
 
   return (
@@ -80,9 +70,9 @@ const MatieresList: React.FC = () => {
       {/* En-tête */}
       <div className="sm:flex sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Gestion des Matières</h1>
+          <h1 className="text-2xl font-bold text-gray-900">Gestion des Unités d'Enseignement</h1>
           <p className="mt-1 text-sm text-gray-500">
-            {state.pagination.total} matière(s) au total
+            {state.pagination.total} UE au total
           </p>
         </div>
         <div className="mt-4 sm:mt-0 flex gap-3">
@@ -99,10 +89,10 @@ const MatieresList: React.FC = () => {
             variant='perso'
             icon='ri-add-line mr-1 font-bold'
             iconPosition='left'
-            action={() => {navigate('/matieres/create');}}
+            action={() => {navigate('/ue/create');}}
             supStyle="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700"
           >
-            Nouvelle matière
+            Nouvelle UE
           </Button>
         </div>
       </div>
@@ -120,90 +110,53 @@ const MatieresList: React.FC = () => {
                 type="text"
                 value={filters.search || ''}
                 onChange={(e) => handleFilterChange('search', e.target.value)}
-                placeholder="Nom ou code de la matière..."
+                placeholder="Code ou nom de l'UE..."
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
               />
             </div>
 
-            {/* Type de cours */}
+            {/* Type UE */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Type de cours
+                Type d'UE
               </label>
               <select
-                title='type_cours'
-                value={filters.type_cours || ''}
-                onChange={(e) => handleFilterChange('type_cours', e.target.value as TypeCours)}
+                title='type'
+                value={filters.type || ''}
+                onChange={(e) => handleFilterChange('type', e.target.value as TypeUE)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
               >
                 <option value="">Tous</option>
-                <option value="CM">Cours Magistral (CM)</option>
-                <option value="TD">Travaux Dirigés (TD)</option>
-                <option value="TP">Travaux Pratiques (TP)</option>
-                <option value="PROJET">Projet</option>
-                <option value="STAGE">Stage</option>
+                <option value="OBLIGATOIRE">Obligatoire</option>
+                <option value="OPTIONNEL">Optionnel</option>
+                <option value="TRANSVERSAL">Transversal</option>
               </select>
             </div>
 
-            {/* UE */}
+            {/* Groupe de cours */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Unité d'Enseignement
+                Groupe de cours
               </label>
               <input
                 type="text"
-                value={filters.ue_code || ''}
-                onChange={(e) => handleFilterChange('ue_code', e.target.value)}
-                placeholder="Code UE..."
+                value={filters.groupe_cours_code || ''}
+                onChange={(e) => handleFilterChange('groupe_cours_code', e.target.value)}
+                placeholder="Code groupe..."
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
               />
             </div>
 
-            {/* Enseignant */}
+            {/* Filière */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Enseignant
-              </label>
-              <input
-                type="number"
-                value={filters.enseignant_id || ''}
-                onChange={(e) => handleFilterChange('enseignant_id', e.target.value ? Number(e.target.value) : undefined)}
-                placeholder="ID Enseignant..."
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-              />
-            </div>
-
-            {/* Jour */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Jour
-              </label>
-              <select
-                title='jour'
-                value={filters.jour_par_defaut || ''}
-                onChange={(e) => handleFilterChange('jour_par_defaut', e.target.value as JourSemaine)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-              >
-                <option value="">Tous</option>
-                <option value="LUNDI">Lundi</option>
-                <option value="MARDI">Mardi</option>
-                <option value="MERCREDI">Mercredi</option>
-                <option value="JEUDI">Jeudi</option>
-                <option value="VENDREDI">Vendredi</option>
-                <option value="SAMEDI">Samedi</option>
-              </select>
-            </div>
-
-            {/* Salle */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Salle
+                Filière
               </label>
               <input
                 type="text"
-                value={filters.salle_par_defaut || ''}
-                onChange={(e) => handleFilterChange('salle_par_defaut', e.target.value)}
-                placeholder="Code salle..."
+                value={filters.filiere_code || ''}
+                onChange={(e) => handleFilterChange('filiere_code', e.target.value)}
+                placeholder="Code filière..."
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
               />
             </div>
@@ -211,7 +164,7 @@ const MatieresList: React.FC = () => {
             {/* Crédits min */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Crédits min
+                Crédits minimum
               </label>
               <input
                 type="number"
@@ -219,6 +172,21 @@ const MatieresList: React.FC = () => {
                 value={filters.credits_min || ''}
                 onChange={(e) => handleFilterChange('credits_min', e.target.value ? Number(e.target.value) : undefined)}
                 placeholder="0"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              />
+            </div>
+
+            {/* Crédits max */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Crédits maximum
+              </label>
+              <input
+                type="number"
+                min="0"
+                value={filters.credits_max || ''}
+                onChange={(e) => handleFilterChange('credits_max', e.target.value ? Number(e.target.value) : undefined)}
+                placeholder="12"
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
               />
             </div>
@@ -236,6 +204,19 @@ const MatieresList: React.FC = () => {
                 placeholder="0"
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
               />
+            </div>
+
+            {/* Avec matières */}
+            <div className="flex items-end">
+              <label className="flex items-center">
+                <input
+                  type="checkbox"
+                  checked={filters.avec_matieres || false}
+                  onChange={(e) => handleFilterChange('avec_matieres', e.target.checked)}
+                  className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                />
+                <span className="ml-2 text-sm text-gray-700">Avec matières</span>
+              </label>
             </div>
           </div>
 
@@ -258,25 +239,25 @@ const MatieresList: React.FC = () => {
         </div>
       )}
 
-      {/* Liste des matières */}
+      {/* Liste des UE */}
       <div className="bg-white shadow rounded-lg overflow-hidden">
-        {state.processing && !state.matieres.length ? (
+        {state.processing && !state.ues.length ? (
           <div className="flex items-center justify-center py-12">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
           </div>
-        ) : state.matieres.length === 0 ? (
+        ) : state.ues.length === 0 ? (
           <div className="text-center py-12">
             <i className="ri-book-open-line text-6xl text-gray-400"></i>
-            <h3 className="mt-4 text-lg font-medium text-gray-900">Aucune matière trouvée</h3>
+            <h3 className="mt-4 text-lg font-medium text-gray-900">Aucune UE trouvée</h3>
             <p className="mt-2 text-sm text-gray-500">
-              Commencez par créer une nouvelle matière
+              Commencez par créer une nouvelle unité d'enseignement
             </p>
             <button
-              onClick={() => navigate('/matieres/create')}
+              onClick={() => navigate('/ue/create')}
               className="mt-6 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700"
             >
               <i className="ri-add-line mr-2"></i>
-              Créer une matière
+              Créer une UE
             </button>
           </div>
         ) : (
@@ -289,19 +270,10 @@ const MatieresList: React.FC = () => {
                       Code
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Nom de la matière
+                      Nom de l'UE
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Type
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      UE
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Enseignant
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Horaire
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Crédits
@@ -309,89 +281,59 @@ const MatieresList: React.FC = () => {
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Volume H.
                     </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Matières
+                    </th>
                     <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Actions
                     </th>
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {state.matieres.map((matiere: IMatiereWithDetails) => (
+                  {state.ues.map((ue: IUniteEnseignementWithDetails) => (
                     <tr 
-                      key={matiere.code} 
+                      key={ue.code} 
                       className="hover:bg-gray-50 cursor-pointer"
-                      onClick={() => handleViewDetails(matiere)}
+                      onClick={() => handleViewDetails(ue)}
                     >
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm font-medium text-gray-900">
-                          {matiere.code}
+                          {ue.code}
                         </div>
                       </td>
                       <td className="px-6 py-4">
                         <div className="text-sm font-medium text-gray-900">
-                          {matiere.nom}
+                          {ue.nom}
                         </div>
-                        {matiere.ue_nom && (
-                          <div className="text-sm text-gray-500">
-                            {matiere.ue_nom}
+                        {ue.description && (
+                          <div className="text-sm text-gray-500 truncate max-w-md">
+                            {ue.description}
                           </div>
                         )}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span className={clsx(
                           'px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full',
-                          getTypeCoursColor(matiere.type_cours)
+                          getTypeUEColor(ue.type)
                         )}>
-                          {matiere.type_cours}
+                          {getTypeUELabel(ue.type)}
                         </span>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">
-                          {matiere.ue_code}
-                        </div>
-                        {matiere.ue_type && (
-                          <div className="text-xs text-gray-500">
-                            {matiere.ue_type}
-                          </div>
-                        )}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">
-                          {matiere.enseignant_nom && matiere.enseignant_prenom
-                            ? `${matiere.enseignant_prenom} ${matiere.enseignant_nom}`
-                            : '—'}
-                        </div>
-                        {matiere.enseignant_matricule && (
-                          <div className="text-xs text-gray-500">
-                            {matiere.enseignant_matricule}
-                          </div>
-                        )}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">
-                          {formatHoraire(
-                            matiere.jour_par_defaut,
-                            matiere.heure_debut_par_defaut,
-                            matiere.heure_fin_par_defaut
-                          )}
-                        </div>
-                        {matiere.salle_nom && (
-                          <div className="text-xs text-gray-500">
-                            {matiere.salle_nom}
-                          </div>
-                        )}
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {ue.credits}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {matiere.credits}
+                        {ue.volume_horaire_total}h
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {matiere.volume_horaire}h
+                        {ue.matieres?.length || 0}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                         <div className="flex items-center justify-end gap-2">
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
-                              handleViewDetails(matiere);
+                              handleViewDetails(ue);
                             }}
                             className="text-indigo-600 hover:text-indigo-900"
                             title="Voir détails"
@@ -401,7 +343,7 @@ const MatieresList: React.FC = () => {
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
-                              handleEdit(matiere);
+                              handleEdit(ue);
                             }}
                             className="text-blue-600 hover:text-blue-900"
                             title="Modifier"
@@ -411,7 +353,7 @@ const MatieresList: React.FC = () => {
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
-                              handleDelete(matiere);
+                              handleDelete(ue);
                             }}
                             className="text-red-600 hover:text-red-900"
                             title="Supprimer"
@@ -508,4 +450,4 @@ const MatieresList: React.FC = () => {
   );
 };
 
-export default MatieresList;
+export default UEList;
