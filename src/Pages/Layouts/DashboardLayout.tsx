@@ -50,12 +50,12 @@ const DashboardLayout: React.FC = () => {
     },
     { 
       name: 'Academic resources', 
-      href: '/academic', 
+      href: '/academic-resources', 
       icon: 'ri-user-line',
       submenu: [
-        { name: 'Liste des étudiants', href: '/academic' },
-        { name: 'Créer un étudiant', href: '/academic/create' },
-        { name: 'Statistiques', href: '/academic/statistics' }
+        { name: 'Liste des étudiants', href: '/academic-resources' },
+        { name: 'Créer un étudiant', href: '/academic-resources/create' },
+        { name: 'Statistiques', href: '/academic-resources/statistics' }
       ]
     },
     { 

@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useStudents } from '../../../Contexts/StudentsContext';
 import type { IEtudiant } from '../../../../server/src/types/Istudents';
+import { Button } from '../../components/Button';
 
 interface DeleteConfirmModalProps {
     isOpen: boolean;
@@ -57,14 +58,14 @@ const DeleteConfirmModal: React.FC<DeleteConfirmModalProps> = ({ isOpen, onClose
         {/* Modal panel */}
         <div className="relative inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
           {/* Bouton de fermeture optionnel en haut à droite */}
-          <button
+          <Button
             title='close'
-            onClick={handleClose}
-            className="absolute top-4 right-4 text-gray-400 hover:text-gray-500 focus:outline-none"
+            action={handleClose}
+            supStyle="absolute top-4 right-4 text-gray-400 hover:text-gray-500 focus:outline-none"
             disabled={state.processing}
           >
             <i className="ri-close-line text-xl"></i>
-          </button>
+          </Button>
 
           <div className="sm:flex sm:items-start">
             {/* Icon */}
@@ -116,11 +117,11 @@ const DeleteConfirmModal: React.FC<DeleteConfirmModalProps> = ({ isOpen, onClose
 
           {/* Actions */}
           <div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
-            <button
+            <Button
               type="button"
-              onClick={handleConfirm}
+              action={handleConfirm}
               disabled={state.processing}
-              className="w-full inline-flex justify-center items-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              supStyle="w-full inline-flex justify-center items-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               {state.processing ? (
                 <>
@@ -133,15 +134,15 @@ const DeleteConfirmModal: React.FC<DeleteConfirmModalProps> = ({ isOpen, onClose
                   Supprimer définitivement
                 </>
               )}
-            </button>
-            <button
+            </Button>
+            <Button
               type="button"
-              onClick={handleClose}
+              action={handleClose}
               disabled={state.processing}
-              className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              supStyle="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               Annuler
-            </button>
+            </Button>
           </div>
         </div>
       </div>

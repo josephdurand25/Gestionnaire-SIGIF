@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate, useParams, Link } from 'react-router-dom';
-import clsx from 'clsx';
-import { Input } from '../../components/Input';
-import { Button } from '../../components/Button';
-import { useMatieres } from '../../../Contexts/MatiereContext';
-import type { IMatiereCreate } from '../../../types/IMatiere';
-import type { JourSemaine, TypeCours } from '../../../types/IGeneral';
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams, Link } from "react-router-dom";
+import clsx from "clsx";
+import { Input } from "../../components/Input";
+import { Button } from "../../components/Button";
+import { useMatieres } from "../../../Contexts/MatiereContext";
+import type { IMatiereCreate } from "../../../types/IMatiere";
+import type { JourSemaine, TypeCours } from "../../../types/IGeneral";
+import { Select } from "../../components/Select";
 
 const MatiereForm: React.FC = () => {
   const { code } = useParams<{ code: string }>();
@@ -14,22 +15,22 @@ const MatiereForm: React.FC = () => {
   const isEditMode = Boolean(code);
 
   const [formData, setFormData] = useState<Partial<IMatiereCreate>>({
-    code: '',
-    nom: '',
-    type_cours: 'CM',
+    code: "",
+    nom: "",
+    type_cours: "CM",
     credits: 3,
     coefficient: 1.0,
     volume_horaire: 30,
-    salle: '',
+    salle: "",
     jour: undefined,
-    heure_debut: '',
-    heure_fin: '',
-    ue_code: '',
-    enseignant_id: undefined
+    heure_debut: "",
+    heure_fin: "",
+    ue_code: "",
+    enseignant_id: undefined,
   });
 
   const [errors, setErrors] = useState<any>({});
-  const [uniteEnseignements, setUniteEnseignements] = useState<any[]>([]);
+  // const [uniteEnseignements, setUniteEnseignements] = useState<any[]>([]);
   const [enseignants, setEnseignants] = useState<any[]>([]);
   const [salles, setSalles] = useState<any[]>([]);
 
@@ -51,43 +52,47 @@ const MatiereForm: React.FC = () => {
   const loadReferenceData = async () => {
     // Simuler le chargement des UE, enseignants et salles
     // À remplacer par de vrais appels API
-    setUniteEnseignements([
-      { code: 'PROG', nom: 'Programmation' },
-      { code: 'MATH', nom: 'Mathématiques' },
-      { code: 'ALGO', nom: 'Algorithmique' },
-      { code: 'BDD', nom: 'Bases de Données' },
-      { code: 'RESEAU', nom: 'Réseaux' },
-    ]);
+    // setUniteEnseignements([
+    //   { code: "PROG", nom: "Programmation" },
+    //   { code: "MATH", nom: "Mathématiques" },
+    //   { code: "ALGO", nom: "Algorithmique" },
+    //   { code: "BDD", nom: "Bases de Données" },
+    //   { code: "RESEAU", nom: "Réseaux" },
+    // ]);
 
     setEnseignants([
-      { id: 1, nom: 'Dupont', prenom: 'Jean' },
-      { id: 2, nom: 'Martin', prenom: 'Marie' },
-      { id: 3, nom: 'Bernard', prenom: 'Paul' },
+      { id: 1, nom: "Dupont", prenom: "Jean" },
+      { id: 2, nom: "Martin", prenom: "Marie" },
+      { id: 3, nom: "Bernard", prenom: "Paul" },
     ]);
 
     setSalles([
-      { code: 'AMPHI-A', nom: 'Amphithéâtre A' },
-      { code: 'TD-B12', nom: 'Salle TD B12' },
-      { code: 'TP-INF1', nom: 'Labo Informatique 1' },
-      { code: 'TP-INF2', nom: 'Labo Informatique 2' },
+      { code: "AMPHI-A", nom: "Amphithéâtre A" },
+      { code: "TD-B12", nom: "Salle TD B12" },
+      { code: "TP-INF1", nom: "Labo Informatique 1" },
+      { code: "TP-INF2", nom: "Labo Informatique 2" },
     ]);
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >,
+  ) => {
     const { name, value } = e.target;
-    
+
     // Conversion des types
     let finalValue: any = value;
-    if (name === 'credits' || name === 'volume_horaire') {
+    if (name === "credits" || name === "volume_horaire") {
       finalValue = value ? Number(value) : undefined;
-    } else if (name === 'coefficient') {
+    } else if (name === "coefficient") {
       finalValue = value ? parseFloat(value) : undefined;
-    } else if (name === 'enseignant_id') {
+    } else if (name === "enseignant_id") {
       finalValue = value ? Number(value) : undefined;
     }
 
-    setFormData(prev => ({ ...prev, [name]: finalValue }));
-    
+    setFormData((prev) => ({ ...prev, [name]: finalValue }));
+
     // Clear error for this field
     if (errors[name]) {
       setErrors((prev: any) => ({ ...prev, [name]: undefined }));
@@ -99,47 +104,53 @@ const MatiereForm: React.FC = () => {
 
     // Code matière
     if (!formData.code?.trim()) {
-      newErrors.code = 'Le code de la matière est requis';
+      newErrors.code = "Le code de la matière est requis";
     } else if (!/^[A-Z0-9_]{3,20}$/i.test(formData.code)) {
-      newErrors.code = 'Le code doit contenir entre 3 et 20 caractères alphanumériques';
+      newErrors.code =
+        "Le code doit contenir entre 3 et 20 caractères alphanumériques";
     }
 
     // Nom
     if (!formData.nom?.trim()) {
-      newErrors.nom = 'Le nom de la matière est requis';
+      newErrors.nom = "Le nom de la matière est requis";
     } else if (formData.nom.length < 3) {
-      newErrors.nom = 'Le nom doit contenir au moins 3 caractères';
+      newErrors.nom = "Le nom doit contenir au moins 3 caractères";
     }
 
     // Type de cours
     if (!formData.type_cours) {
-      newErrors.type_cours = 'Le type de cours est requis';
+      newErrors.type_cours = "Le type de cours est requis";
     }
 
     // UE
     if (!formData.ue_code?.trim()) {
-      newErrors.ue_code = 'L\'unité d\'enseignement est requise';
+      newErrors.ue_code = "L'unité d'enseignement est requise";
     }
 
     // Crédits
     if (!formData.credits || formData.credits < 1 || formData.credits > 12) {
-      newErrors.credits = 'Les crédits doivent être entre 1 et 12';
+      newErrors.credits = "Les crédits doivent être entre 1 et 12";
     }
 
     // Coefficient
-    if (!formData.coefficient || formData.coefficient < 0 || formData.coefficient > 1) {
-      newErrors.coefficient = 'Le coefficient doit être entre 0 et 1';
+    if (
+      !formData.coefficient ||
+      formData.coefficient < 0 ||
+      formData.coefficient > 1
+    ) {
+      newErrors.coefficient = "Le coefficient doit être entre 0 et 1";
     }
 
     // Volume horaire
     if (!formData.volume_horaire || formData.volume_horaire < 1) {
-      newErrors.volume_horaire = 'Le volume horaire doit être supérieur à 0';
+      newErrors.volume_horaire = "Le volume horaire doit être supérieur à 0";
     }
 
     // Validation horaires
     if (formData.heure_debut && formData.heure_fin) {
       if (formData.heure_debut >= formData.heure_fin) {
-        newErrors.heure_fin_par_defaut = 'L\'heure de fin doit être après l\'heure de début';
+        newErrors.heure_fin_par_defaut =
+          "L'heure de fin doit être après l'heure de début";
       }
     }
 
@@ -160,7 +171,7 @@ const MatiereForm: React.FC = () => {
       heure_debut_par_defaut: formData.heure_debut || undefined,
       heure_fin_par_defaut: formData.heure_fin || undefined,
       salle_par_defaut: formData.salle || undefined,
-      enseignant_id: formData.enseignant_id || undefined
+      enseignant_id: formData.enseignant_id || undefined,
     } as IMatiereCreate;
 
     if (isEditMode && code) {
@@ -170,34 +181,41 @@ const MatiereForm: React.FC = () => {
     }
 
     if (state.success) {
-      navigate('/matieres');
+      navigate("/matieres");
     }
   };
 
   const handleCancel = () => {
-    navigate('/matieres');
+    navigate("/matieres");
   };
 
-  const jours: JourSemaine[] = ['LUNDI', 'MARDI', 'MERCREDI', 'JEUDI', 'VENDREDI', 'SAMEDI'];
-  const typesCours: TypeCours[] = ['CM', 'TD', 'TP'];
+  const jours: JourSemaine[] = [
+    "LUNDI",
+    "MARDI",
+    "MERCREDI",
+    "JEUDI",
+    "VENDREDI",
+    "SAMEDI",
+  ];
+  // const typesCours: TypeCours[] = ['CM', 'TD', 'TP'];
 
-  const getTypeCoursLabel = (type: TypeCours) => {
-    const labels: Record<TypeCours, string> = {
-      'CM': 'Cours Magistral',
-      'TD': 'Travaux Dirigés',
-      'TP': 'Travaux Pratiques',
-    };
-    return labels[type];
-  };
+  // const getTypeCoursLabel = (type: TypeCours) => {
+  //   const labels: Record<TypeCours, string> = {
+  //     'CM': 'Cours Magistral',
+  //     'TD': 'Travaux Dirigés',
+  //     'TP': 'Travaux Pratiques',
+  //   };
+  //   return labels[type];
+  // };
 
   const getJourLabel = (jour: JourSemaine) => {
     const labels: Record<JourSemaine, string> = {
-      'LUNDI': 'Lundi',
-      'MARDI': 'Mardi',
-      'MERCREDI': 'Mercredi',
-      'JEUDI': 'Jeudi',
-      'VENDREDI': 'Vendredi',
-      'SAMEDI': 'Samedi'
+      LUNDI: "Lundi",
+      MARDI: "Mardi",
+      MERCREDI: "Mercredi",
+      JEUDI: "Jeudi",
+      VENDREDI: "Vendredi",
+      SAMEDI: "Samedi",
     };
     return labels[jour];
   };
@@ -224,7 +242,7 @@ const MatiereForm: React.FC = () => {
             <i className="ri-arrow-right-s-line text-gray-400"></i>
           </li>
           <li className="text-gray-900 font-medium">
-            {isEditMode ? 'Modifier la matière' : 'Nouvelle matière'}
+            {isEditMode ? "Modifier la matière" : "Nouvelle matière"}
           </li>
         </ol>
       </nav>
@@ -239,12 +257,14 @@ const MatiereForm: React.FC = () => {
           </div>
           <div className="ml-4">
             <h1 className="text-2xl font-bold text-gray-900">
-              {isEditMode ? 'Modifier la matière' : 'Créer une nouvelle matière'}
+              {isEditMode
+                ? "Modifier la matière"
+                : "Créer une nouvelle matière"}
             </h1>
             <p className="text-sm text-gray-500 mt-1">
               {isEditMode
-                ? 'Modifiez les informations de la matière'
-                : 'Remplissez les informations pour créer une nouvelle matière'}
+                ? "Modifiez les informations de la matière"
+                : "Remplissez les informations pour créer une nouvelle matière"}
             </p>
           </div>
         </div>
@@ -261,7 +281,7 @@ const MatiereForm: React.FC = () => {
 
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
             {/* Code matière */}
-            <Input 
+            <Input
               labelText="Code de la matière"
               name="code"
               value={formData.code}
@@ -274,7 +294,7 @@ const MatiereForm: React.FC = () => {
             />
 
             {/* Nom */}
-            <Input 
+            <Input
               labelText="Nom de la matière"
               name="nom"
               value={formData.nom}
@@ -287,25 +307,30 @@ const MatiereForm: React.FC = () => {
 
             {/* Type de cours */}
             <div>
-              <label htmlFor="type_cours" className="block text-sm font-medium text-gray-800 mb-1">
-                Type de cours <span className="text-red-500">*</span>
-              </label>
-              <select
+              <Select
+                labelText="Type de cours "
+                requis
+                indication="choisissez"
                 name="type_cours"
                 id="type_cours"
                 value={formData.type_cours}
                 onChange={handleChange}
-                className={clsx(
-                  'mt-1 block w-full px-3 py-3 border rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500',
-                  errors.type_cours ? 'border-red-300' : 'border-gray-300'
+                styleSelect={clsx(
+                  "mt-1 block w-full px-3 py-3 border rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500",
+                  errors.type_cours ? "border-red-300" : "border-gray-300",
                 )}
-              >
-                {typesCours.map(type => (
+                options={[
+                  { id: 1, value: "CM", label: "Cours Magistral" },
+                  { id: 2, value: "TD", label: "Travaux Dirigés" },
+                  { id: 3, value: "TP", label: "Travaux Pratiques" },
+                ]}
+              />
+              {/* {typesCours.map(type => (
                   <option key={type} value={type}>
                     {getTypeCoursLabel(type)}
                   </option>
                 ))}
-              </select>
+              </Select> */}
               {errors.type_cours && (
                 <p className="mt-1 text-sm text-red-600">{errors.type_cours}</p>
               )}
@@ -313,26 +338,39 @@ const MatiereForm: React.FC = () => {
 
             {/* Unité d'Enseignement */}
             <div>
-              <label htmlFor="ue_code" className="block text-sm font-medium text-gray-800 mb-1">
+              {/* <label
+                htmlFor="ue_code"
+                className="block text-sm font-medium text-gray-800 mb-1"
+              >
                 Unité d'Enseignement <span className="text-red-500">*</span>
-              </label>
-              <select
+              </label> */}
+              <Select
+                labelText="Type de cours "
+                requis
+                indication="Selectionnez une UE"
                 name="ue_code"
                 id="ue_code"
                 value={formData.ue_code}
                 onChange={handleChange}
-                className={clsx(
-                  'mt-1 block w-full px-3 py-3 border rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500',
-                  errors.ue_code ? 'border-red-300' : 'border-gray-300'
+                styleSelect={clsx(
+                  "mt-1 block w-full px-3 py-3 border rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500",
+                  errors.ue_code ? "border-red-300" : "border-gray-300",
                 )}
-              >
-                <option value="">Sélectionnez une UE</option>
+                options={[
+                  { id: 1, value: "PROG", label: "Programmation" },
+                  { id: 2, value: "MATH", label: "Mathématiques" },
+                  { id: 3, value: "ALGO", label: "Algorithmique" },
+                  { id: 4, value: "BDD", label: "Bases de Données" },
+                  { id: 5, value: "RESEAU", label: "Réseaux" }  
+                ]}
+              />
+              {/* <option value="">Sélectionnez une UE</option>
                 {uniteEnseignements.map(ue => (
                   <option key={ue.code} value={ue.code}>
                     {ue.code} - {ue.nom}
                   </option>
                 ))}
-              </select>
+              </select> */}
               {errors.ue_code && (
                 <p className="mt-1 text-sm text-red-600">{errors.ue_code}</p>
               )}
@@ -349,7 +387,7 @@ const MatiereForm: React.FC = () => {
 
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
             {/* Crédits */}
-            <Input 
+            <Input
               labelText="Crédits ECTS"
               name="credits"
               type="number"
@@ -364,7 +402,7 @@ const MatiereForm: React.FC = () => {
             />
 
             {/* Coefficient */}
-            <Input 
+            <Input
               labelText="Coefficient"
               name="coefficient"
               type="number"
@@ -379,7 +417,7 @@ const MatiereForm: React.FC = () => {
             />
 
             {/* Volume horaire */}
-            <Input 
+            <Input
               labelText="Volume horaire (heures)"
               name="volume_horaire"
               type="number"
@@ -398,7 +436,9 @@ const MatiereForm: React.FC = () => {
               <i className="ri-information-line text-blue-400 text-xl"></i>
               <div className="ml-3">
                 <p className="text-sm text-blue-700">
-                  <strong>Coefficient :</strong> Valeur entre 0 et 1 représentant le poids de cette matière dans l'UE.<br/>
+                  <strong>Coefficient :</strong> Valeur entre 0 et 1
+                  représentant le poids de cette matière dans l'UE.
+                  <br />
                   <strong>Exemple :</strong> CM = 0.5, TD = 0.3, TP = 0.2
                 </p>
               </div>
@@ -415,18 +455,21 @@ const MatiereForm: React.FC = () => {
 
           <div className="grid grid-cols-1 gap-6">
             <div>
-              <label htmlFor="enseignant_id" className="block text-sm font-medium text-gray-800 mb-1">
+              <label
+                htmlFor="enseignant_id"
+                className="block text-sm font-medium text-gray-800 mb-1"
+              >
                 Enseignant responsable
               </label>
               <select
                 name="enseignant_id"
                 id="enseignant_id"
-                value={formData.enseignant_id || ''}
+                value={formData.enseignant_id || ""}
                 onChange={handleChange}
                 className="mt-1 block w-full px-3 py-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
               >
                 <option value="">Aucun enseignant assigné</option>
-                {enseignants.map(ens => (
+                {enseignants.map((ens) => (
                   <option key={ens.id} value={ens.id}>
                     {ens.prenom} {ens.nom}
                   </option>
@@ -449,37 +492,50 @@ const MatiereForm: React.FC = () => {
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
             {/* Jour */}
             <div>
-              <label htmlFor="jour" className="block text-sm font-medium text-gray-800 mb-1">
-                Jour de la semaine
-              </label>
-              <select
+              
+              <Select
+                labelText="Jour de la semaine "
+                indication="Non défini"
                 name="jour"
                 id="jour"
-                value={formData.jour || ''}
+                value={formData.jour || ""}
                 onChange={handleChange}
-                className="mt-1 block w-full px-3 py-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-              >
-                <option value="">Non défini</option>
-                {jours.map(j => (
-                  <option key={j} value={j}>{getJourLabel(j)}</option>
-                ))}
-              </select>
+                styleSelect="mt-1 block w-full px-3 py-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              
+                //  <option value="">Non défini</option>
+                // {jours.map((j) => (
+                //   <option key={j} value={j}>
+                //     {getJourLabel(j)}
+                //   </option>
+                // ))} 
+                  options={[
+                  { id: 1, value: "LUN", label: "LUNDI" },
+                  { id: 2, value: "MAR", label: "MARDI" },
+                  { id: 3, value: "MER", label: "MERCREDI" },
+                  { id: 4, value: "JEU", label: "JEUDI" },
+                  { id: 5, value: "VEN", label: "VENDREDI" } , 
+                  { id: 6, value: "SAM", label: "SAMEDI" }  
+                ]}
+              />
             </div>
 
             {/* Salle */}
             <div>
-              <label htmlFor="salle_par_defaut" className="block text-sm font-medium text-gray-800 mb-1">
+              <label
+                htmlFor="salle_par_defaut"
+                className="block text-sm font-medium text-gray-800 mb-1"
+              >
                 Salle par défaut
               </label>
               <select
                 name="salle_par_defaut"
                 id="salle_par_defaut"
-                value={formData.salle || ''}
+                value={formData.salle || ""}
                 onChange={handleChange}
                 className="mt-1 block w-full px-3 py-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
               >
                 <option value="">Aucune salle</option>
-                {salles.map(salle => (
+                {salles.map((salle) => (
                   <option key={salle.code} value={salle.code}>
                     {salle.code} - {salle.nom}
                   </option>
@@ -488,7 +544,7 @@ const MatiereForm: React.FC = () => {
             </div>
 
             {/* Heure début */}
-            <Input 
+            <Input
               labelText="Heure de début"
               name="heure_debut"
               type="time"
@@ -498,7 +554,7 @@ const MatiereForm: React.FC = () => {
             />
 
             {/* Heure fin */}
-            <Input 
+            <Input
               labelText="Heure de fin"
               name="heure_fin"
               type="time"
@@ -514,7 +570,9 @@ const MatiereForm: React.FC = () => {
               <i className="ri-information-line text-yellow-400 text-xl"></i>
               <div className="ml-3">
                 <p className="text-sm text-yellow-700">
-                  Ces informations sont des valeurs par défaut. Les séances réelles seront planifiées séparément dans le module "Emploi du temps".
+                  Ces informations sont des valeurs par défaut. Les séances
+                  réelles seront planifiées séparément dans le module "Emploi du
+                  temps".
                 </p>
               </div>
             </div>
@@ -549,12 +607,12 @@ const MatiereForm: React.FC = () => {
             type="submit"
             variant="accent"
             size="medium"
-            icon={isEditMode ? 'ri-save-line' : 'ri-add-line'}
+            icon={isEditMode ? "ri-save-line" : "ri-add-line"}
             iconPosition="left"
             isLoading={state.processing}
             disabled={state.processing}
           >
-            {isEditMode ? 'Mettre à jour' : 'Créer la matière'}
+            {isEditMode ? "Mettre à jour" : "Créer la matière"}
           </Button>
         </div>
       </form>

@@ -2,7 +2,7 @@
 export const Input: React.FC<React.InputHTMLAttributes<HTMLInputElement> & { error?: string, labelText: string, inputStyle?: string, styleLabletext?: string, required?: boolean, pattern?: string, contentStyle?: string, auto_complete?:boolean }>  = ({placeholder, name, pattern, value, min, max, onChange, error, labelText, inputStyle, styleLabletext, required,contentStyle, disabled=false, type='text',auto_complete=false }) => {
   return (
     <div className={`${contentStyle}`}>
-        <label className={`block tracking-wide ${error ? 'text-red-600': 'text-gray-800' }   text-md font-bold first-letter:uppercase ${styleLabletext}`} htmlFor={name}>
+        <label className={`block tracking-wide ${error ? 'text-red-600': 'text-gray-800' }   text-sm font-bold first-letter:uppercase ${styleLabletext}`} htmlFor={name}>
           { labelText } {required && <span className="text-red-500">*</span>}
         </label>
         <input type={type} 

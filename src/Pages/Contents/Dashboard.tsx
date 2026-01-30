@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useStudents } from '../../Contexts/StudentsContext';
 import clsx from 'clsx';
+import { Button } from '../components/Button';
 
 const Dashboard: React.FC = () => {
   const { state, actions } = useStudents();
@@ -259,8 +260,9 @@ const Dashboard: React.FC = () => {
             </div>
           </Link>
 
-          <button
-            className="flex items-center justify-center rounded-lg border-2 border-dashed border-gray-300 p-6 hover:border-indigo-500 hover:bg-indigo-50 transition-colors"
+          <Button
+            variant='perso'
+            supStyle="flex items-center justify-center rounded-lg border-2 border-dashed border-gray-300 p-6 hover:border-indigo-500 hover:bg-indigo-50 transition-colors"
           >
             <div className="text-center">
               <i className="ri-download-line text-3xl text-indigo-600"></i>
@@ -268,7 +270,7 @@ const Dashboard: React.FC = () => {
                 Exporter données
               </p>
             </div>
-          </button>
+          </Button>
         </div>
       </div>
     </div>

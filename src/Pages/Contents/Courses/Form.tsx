@@ -5,6 +5,9 @@ import type { JourSemaine, NiveauEtude } from '../../../types/api';
 import { useCourses } from '../../../Contexts/CoursesContext';
 import type { ICours } from '../../../types/ICours';
 import { Input } from '../../components/Input';
+import { Select } from '../../components/Select';
+import { TextArea } from '../../components/Textarea';
+import { Button } from '../../components/Button';
 
 const CourseForm: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -136,7 +139,7 @@ const CourseForm: React.FC = () => {
 
   const jours: JourSemaine[] = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
   const niveaux: NiveauEtude[] = ['L1', 'L2', 'L3', 'M1', 'M2'];
-  const filieres = ['Informatique', 'Mathématiques', 'Physique', 'Chimie', 'Biologie'];
+  // const filieres = ['Informatique', 'Mathématiques', 'Physique', 'Chimie', 'Biologie'];
 
   return (
     <div className="mx-auto space-y-6">
@@ -207,24 +210,32 @@ const CourseForm: React.FC = () => {
             />
 
             <div>
-              <label htmlFor="filiere" className="block text-sm font-medium text-gray-700">
-                Filière <span className="text-red-500">*</span>
-              </label>
-              <select
+              <Select
+                labelText='Filière'
+                requis
                 name="filiere"
                 id="filiere"
+                indication="Sélectionnez une filière"
                 value={formData.filiere}
                 onChange={handleChange}
-                className={clsx(
+                styleSelect={clsx(
                   'mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500',
                   errors.filiere ? 'border-red-300' : 'border-gray-300'
                 )}
-              >
-                <option value="">Sélectionnez une filière</option>
+              
+                options = {[
+                  {id:1, value:"info", label:"Informatique "},
+                  {id:2, value:"math", label:"Mathématiques"},
+                  {id:3, value:"physi", label:"Physique"},
+                  {id:4, value:"chimie", label:"Chimie"},
+                  {id:5, value:"bio", label:"biologie"}
+                ]}
+                />
+                {/* <option value="">Sélectionnez une filière</option>
                 {filieres.map(f => (
                   <option key={f} value={f}>{f}</option>
                 ))}
-              </select>
+              </Select> */}
               {errors.filiere && (
                 <p className="mt-1 text-sm text-red-600">{errors.filiere}</p>
               )}
@@ -253,8 +264,9 @@ const CourseForm: React.FC = () => {
                 onChange={handleChange}
                 placeholder="Décrivez le contenu et les objectifs du cours..."
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-              />
-            </div>
+                />
+                </div>
+           
 
             <Input 
               labelText="professeur"
@@ -289,18 +301,18 @@ const CourseForm: React.FC = () => {
 
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
             <div>
-              <label htmlFor="credits" className="block text-sm font-medium text-gray-700">
-                Crédits <span className="text-red-500">*</span>
-              </label>
-              <input
+              <Input
+                labelText="Crédits"
+                required
                 type="number"
                 name="credits"
                 id="credits"
                 min="1"
                 max="12"
+                placeholder=" "
                 value={formData.credits}
                 onChange={handleChange}
-                className={clsx(
+                inputStyle={clsx(
                   'mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500',
                   errors.credits ? 'border-red-300' : 'border-gray-300'
                 )}
@@ -311,33 +323,34 @@ const CourseForm: React.FC = () => {
             </div>
 
             <div>
-              <label htmlFor="semestre" className="block text-sm font-medium text-gray-700">
-                Semestre <span className="text-red-500">*</span>
-              </label>
-              <select
+              
+              <Select
+                labelText="Semestre"
+                requis
                 name="semestre"
                 id="semestre"
                 value={formData.semestre}
                 onChange={handleChange}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-              >
-                <option value="S1">Semestre 1</option>
-                <option value="S2">Semestre 2</option>
-              </select>
+                styleSelect="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              
+                options ={  [
+                  {id:1, value:"s1", label:"semestre 1"},
+                  {id:2, value:"s2", label:"semestre 2"}
+                  ]} 
+               />
             </div>
 
             <div>
-              <label htmlFor="capacite_max" className="block text-sm font-medium text-gray-700">
-                Capacité maximale <span className="text-red-500">*</span>
-              </label>
-              <input
+              <Input 
+                labelText="Capacité maximale"
+                required
                 type="number"
                 name="capacite_max"
                 id="capacite_max"
                 min="1"
                 value={formData.capacite_max}
                 onChange={handleChange}
-                className={clsx(
+                inputStyle={clsx(
                   'mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500',
                   errors.capacite_max ? 'border-red-300' : 'border-gray-300'
                 )}
@@ -360,11 +373,12 @@ const CourseForm: React.FC = () => {
 
           <div className="flex flex-wrap gap-3">
             {niveaux.map(niveau => (
-              <button
+              <Button
                 key={niveau}
                 type="button"
-                onClick={() => handleNiveauToggle(niveau)}
-                className={clsx(
+                variant = "perso"
+                action={() => handleNiveauToggle(niveau)}
+                supStyle={clsx(
                   'px-4 py-2 rounded-lg border-2 font-medium transition-colors',
                   niveauxSelectionnes.includes(niveau) || formData.niveaux === niveau
                     ? 'border-indigo-600 bg-indigo-50 text-indigo-700'
@@ -372,7 +386,7 @@ const CourseForm: React.FC = () => {
                 )}
               >
                 {niveau}
-              </button>
+              </Button>
             ))}
           </div>
           {errors.niveaux && (
@@ -388,63 +402,60 @@ const CourseForm: React.FC = () => {
 
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
             <div>
-              <label htmlFor="jour" className="block text-sm font-medium text-gray-700">
-                Jour de la semaine
-              </label>
-              <select
+              <Select
+                labelText="Jour de la semaine"
+                indication='Choisi un jour de la semaine'
                 name="jour"
                 id="jour"
                 value={formData.jour || ''}
                 onChange={handleChange}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-              >
-                <option value="">Non défini</option>
-                {jours.map(j => (
-                  <option key={j} value={j}>{j}</option>
-                ))}
-              </select>
+                styleSelect="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              
+                options ={  [
+                  {id:1, value:"l", label:"Lundi"},
+                  {id:2, value:"Mar", label:"Mardi"},
+                  {id:2, value:"Mer", label:"Mercredi"},
+                  {id:2, value:"jeu", label:"Jeudi"},
+                  {id:2, value:"ven", label:"Vendredi"},
+                  {id:2, value:"sam", label:"Samedi"}
+                  ]} 
+              />
             </div>
 
             <div>
-              <label htmlFor="salle" className="block text-sm font-medium text-gray-700">
-                Salle
-              </label>
-              <input
+              <Input
+                labelText="Salle"
                 type="text"
                 name="salle"
                 id="salle"
                 value={formData.salle}
                 onChange={handleChange}
                 placeholder="Ex: Salle B201"
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                inputStyle="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
               />
             </div>
 
             <div>
-              <label htmlFor="heure_debut" className="block text-sm font-medium text-gray-700">
-                Heure de début
-              </label>
-              <input
+              <Input
+                labelText="Heure de début"
                 type="time"
                 name="heure_debut"
                 id="heure_debut"
                 value={formData.heure_debut}
                 onChange={handleChange}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                inputStyle="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
               />
             </div>
 
             <div>
-              <label htmlFor="heure_fin" className="block text-sm font-medium text-gray-700">
-                Heure de fin
-              </label>
-              <input
+              <Input
+                labelText="Heure de fin"
                 type="time"
                 name="heure_fin"
                 id="heure_fin"
                 value={formData.heure_fin}
                 onChange={handleChange}
-                className={clsx(
+                inputStyle={clsx(
                   'mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500',
                   errors.heure_fin ? 'border-red-300' : 'border-gray-300'
                 )}
@@ -515,18 +526,19 @@ const CourseForm: React.FC = () => {
 
         {/* Boutons d'action */}
         <div className="flex justify-end gap-4">
-          <button
+          <Button
+            variant='perso'
             type="button"
-            onClick={handleCancel}
+            action={handleCancel}
             disabled={state.processing}
-            className="px-6 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            supStyle="px-6 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Annuler
-          </button>
-          <button
+          </Button>
+          <Button
             type="submit"
             disabled={state.processing}
-            className="inline-flex items-center px-6 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed"
+            supStyle="inline-flex items-center px-6 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {state.processing ? (
               <>
@@ -539,7 +551,7 @@ const CourseForm: React.FC = () => {
                 {isEditMode ? 'Mettre à jour' : 'Créer le cours'}
               </>
             )}
-          </button>
+          </Button>
         </div>
       </form>
     </div>

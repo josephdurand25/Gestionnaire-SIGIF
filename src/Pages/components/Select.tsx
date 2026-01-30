@@ -19,7 +19,7 @@ interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
 export const Select: React.FC<SelectProps>= ({ name, value, onChange, options = [], error, labelText, requis, styleContainer ,indication="Select an option", styleSelect, styleSelectLabelText }) => {
   return (
     <div className={`${styleContainer}`}>
-      <label className={`block tracking-wide ${error ? 'text-red-600': 'text-gray-800' } text-md font-bold first-letter:uppercase ${styleSelectLabelText}`} htmlFor={name}>
+      <label className={`block tracking-wide ${error ? 'text-red-600': 'text-gray-800' } text-sm font-bold first-letter:uppercase ${styleSelectLabelText}`} htmlFor={name}>
         { labelText } {requis && <span className="text-red-500">*</span>}
       </label>
       {/* {options.length === 0 && <p className="text-yellow-500 text-xs">No options available.</p>} */}

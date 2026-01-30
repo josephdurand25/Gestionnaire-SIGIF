@@ -1,13 +1,16 @@
-import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
-import clsx from 'clsx';
-import { useCourses } from '../../../Contexts/CoursesContext';
+import React, { useEffect, useState } from "react";
+import { useParams, useNavigate, Link } from "react-router-dom";
+import clsx from "clsx";
+import { useCourses } from "../../../Contexts/CoursesContext";
+import { Button } from "../../components/Button";
 
 const CourseDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { state, actions } = useCourses();
-  const [activeTab, setActiveTab] = useState<'info' | 'enrolled' | 'schedule'>('info');
+  const [activeTab, setActiveTab] = useState<"info" | "enrolled" | "schedule">(
+    "info",
+  );
 
   useEffect(() => {
     if (id) {
@@ -32,8 +35,12 @@ const CourseDetails: React.FC = () => {
     return (
       <div className="text-center py-12">
         <i className="ri-book-open-line text-6xl text-gray-400"></i>
-        <h3 className="mt-4 text-lg font-medium text-gray-900">Cours non trouvé</h3>
-        <p className="mt-2 text-sm text-gray-500">Le cours demandé n'existe pas ou a été supprimé.</p>
+        <h3 className="mt-4 text-lg font-medium text-gray-900">
+          Cours non trouvé
+        </h3>
+        <p className="mt-2 text-sm text-gray-500">
+          Le cours demandé n'existe pas ou a été supprimé.
+        </p>
         <Link
           to="/courses"
           className="mt-6 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700"
@@ -47,10 +54,14 @@ const CourseDetails: React.FC = () => {
 
   const getStatusColor = (statut: string) => {
     switch (statut) {
-      case 'actif': return 'bg-green-100 text-green-800';
-      case 'archive': return 'bg-gray-100 text-gray-800';
-      case 'brouillon': return 'bg-yellow-100 text-yellow-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case "actif":
+        return "bg-green-100 text-green-800";
+      case "archive":
+        return "bg-gray-100 text-gray-800";
+      case "brouillon":
+        return "bg-yellow-100 text-yellow-800";
+      default:
+        return "bg-gray-100 text-gray-800";
     }
   };
 
@@ -59,17 +70,22 @@ const CourseDetails: React.FC = () => {
   };
 
   const handleDelete = async () => {
-    if (window.confirm(`Êtes-vous sûr de vouloir supprimer le cours "${course.nom}" ?`)) {
+    if (
+      window.confirm(
+        `Êtes-vous sûr de vouloir supprimer le cours "${course.nom}" ?`,
+      )
+    ) {
       await actions.deleteCourse(course.id!);
       if (state.success) {
-        navigate('/courses');
+        navigate("/courses");
       }
     }
   };
 
-  const tauxRemplissage = course.capacite_actuelle && course.capacite_max
-    ? (course.capacite_actuelle / course.capacite_max) * 100
-    : 0;
+  const tauxRemplissage =
+    course.capacite_actuelle && course.capacite_max
+      ? (course.capacite_actuelle / course.capacite_max) * 100
+      : 0;
 
   return (
     <div className="space-y-6">
@@ -92,9 +108,7 @@ const CourseDetails: React.FC = () => {
           <li>
             <i className="ri-arrow-right-s-line text-gray-400"></i>
           </li>
-          <li className="text-gray-900 font-medium">
-            {course.code}
-          </li>
+          <li className="text-gray-900 font-medium">{course.code}</li>
         </ol>
       </nav>
 
@@ -118,27 +132,29 @@ const CourseDetails: React.FC = () => {
                 </p>
               </div>
               <div className="mt-6 flex flex-col justify-stretch space-y-3 sm:flex-row sm:space-y-0 sm:space-x-4">
-                <button
-                  onClick={handleEdit}
-                  className="inline-flex justify-center items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+                <Button
+                  type="button"
+                  variant="perso"
+                  action={handleEdit}
+                  supStyle="inline-flex justify-center items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
                 >
-                  <i className="ri-edit-line mr-2"></i>
+                <i className="ri-edit-line mr-2"></i>
                   Modifier
-                </button>
-                <button
-                  onClick={handleDelete}
-                  className="inline-flex justify-center items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700"
+                </Button>
+                <Button
+                  type="button"
+                  variant="perso"
+                  action={handleDelete}
+                  supStyle="inline-flex justify-center items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700"
                 >
                   <i className="ri-delete-bin-line mr-2"></i>
                   Supprimer
-                </button>
+                </Button>
               </div>
             </div>
           </div>
           <div className="hidden sm:block md:hidden mt-6 min-w-0 flex-1">
-            <h1 className="text-2xl font-bold text-gray-900">
-              {course.nom}
-            </h1>
+            <h1 className="text-2xl font-bold text-gray-900">{course.nom}</h1>
             <p className="text-sm text-gray-500 mt-1">
               {course.code} • {course.filiere}
             </p>
@@ -149,47 +165,53 @@ const CourseDetails: React.FC = () => {
       {/* Onglets */}
       <div className="border-b border-gray-200">
         <nav className="-mb-px flex space-x-8">
-          <button
-            onClick={() => setActiveTab('info')}
-            className={clsx(
-              'whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm',
-              activeTab === 'info'
-                ? 'border-indigo-500 text-indigo-600'
-                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+          <Button
+            type="button"
+            variant="perso"
+            action={() => setActiveTab("info")}
+            supStyle={clsx(
+              "whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm",
+              activeTab === "info"
+                ? "border-indigo-500 text-indigo-600"
+                : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300",
             )}
           >
             <i className="ri-information-line mr-2"></i>
             Informations
-          </button>
-          <button
-            onClick={() => setActiveTab('enrolled')}
-            className={clsx(
-              'whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm',
-              activeTab === 'enrolled'
-                ? 'border-indigo-500 text-indigo-600'
-                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+          </Button>
+          <Button
+            type="submit"
+            variant="perso"
+            action={() => setActiveTab("enrolled")}
+            supStyle={clsx(
+              "whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm",
+              activeTab === "enrolled"
+                ? "border-indigo-500 text-indigo-600"
+                : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300",
             )}
           >
             <i className="ri-user-line mr-2"></i>
             Étudiants inscrits ({course.capacite_actuelle || 0})
-          </button>
-          <button
-            onClick={() => setActiveTab('schedule')}
-            className={clsx(
-              'whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm',
-              activeTab === 'schedule'
-                ? 'border-indigo-500 text-indigo-600'
-                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+          </Button>
+          <Button
+            type="button"
+            variant="perso"
+            action={() => setActiveTab("schedule")}
+            supStyle={clsx(
+              "whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm",
+              activeTab === "schedule"
+                ? "border-indigo-500 text-indigo-600"
+                : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300",
             )}
           >
             <i className="ri-calendar-line mr-2"></i>
             Planning
-          </button>
+          </Button>
         </nav>
       </div>
 
       {/* Contenu des onglets */}
-      {activeTab === 'info' && (
+      {activeTab === "info" && (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Colonne principale */}
           <div className="lg:col-span-2 space-y-6">
@@ -213,36 +235,59 @@ const CourseDetails: React.FC = () => {
               <dl className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
                 <div>
                   <dt className="text-sm font-medium text-gray-500">Code</dt>
-                  <dd className="mt-1 text-sm text-gray-900 font-mono">{course.code}</dd>
+                  <dd className="mt-1 text-sm text-gray-900 font-mono">
+                    {course.code}
+                  </dd>
                 </div>
                 <div>
                   <dt className="text-sm font-medium text-gray-500">Filière</dt>
-                  <dd className="mt-1 text-sm text-gray-900">{course.filiere}</dd>
+                  <dd className="mt-1 text-sm text-gray-900">
+                    {course.filiere}
+                  </dd>
                 </div>
                 <div>
                   <dt className="text-sm font-medium text-gray-500">Crédits</dt>
-                  <dd className="mt-1 text-sm text-gray-900">{course.credits}</dd>
+                  <dd className="mt-1 text-sm text-gray-900">
+                    {course.credits}
+                  </dd>
                 </div>
                 <div>
-                  <dt className="text-sm font-medium text-gray-500">Semestre</dt>
-                  <dd className="mt-1 text-sm text-gray-900">{course.semestre}</dd>
+                  <dt className="text-sm font-medium text-gray-500">
+                    Semestre
+                  </dt>
+                  <dd className="mt-1 text-sm text-gray-900">
+                    {course.semestre}
+                  </dd>
                 </div>
                 <div>
-                  <dt className="text-sm font-medium text-gray-500">Professeur</dt>
-                  <dd className="mt-1 text-sm text-gray-900">{course.professeur}</dd>
+                  <dt className="text-sm font-medium text-gray-500">
+                    Professeur
+                  </dt>
+                  <dd className="mt-1 text-sm text-gray-900">
+                    {course.professeur}
+                  </dd>
                 </div>
                 <div>
                   <dt className="text-sm font-medium text-gray-500">Statut</dt>
                   <dd className="mt-1">
-                    <span className={clsx('inline-flex rounded-full px-2 py-1 text-xs font-semibold', getStatusColor(course.statut))}>
+                    <span
+                      className={clsx(
+                        "inline-flex rounded-full px-2 py-1 text-xs font-semibold",
+                        getStatusColor(course.statut),
+                      )}
+                    >
                       {course.statut}
                     </span>
                   </dd>
                 </div>
                 {course.prerequis && (
                   <div className="sm:col-span-2">
-                    <dt className="text-sm font-medium text-gray-500">Prérequis</dt>
-                    <dd className="mt-1 text-sm text-gray-900">{course.prerequis}</dd>
+                    <dt className="text-sm font-medium text-gray-500">
+                      Prérequis
+                    </dt>
+                    <dd className="mt-1 text-sm text-gray-900">
+                      {course.prerequis}
+                    </dd>
                   </div>
                 )}
               </dl>
@@ -257,13 +302,19 @@ const CourseDetails: React.FC = () => {
                 <dl className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
                   {course.jour && (
                     <div>
-                      <dt className="text-sm font-medium text-gray-500">Jour</dt>
-                      <dd className="mt-1 text-sm text-gray-900">{course.jour}</dd>
+                      <dt className="text-sm font-medium text-gray-500">
+                        Jour
+                      </dt>
+                      <dd className="mt-1 text-sm text-gray-900">
+                        {course.jour}
+                      </dd>
                     </div>
                   )}
                   {course.heure_debut && course.heure_fin && (
                     <div>
-                      <dt className="text-sm font-medium text-gray-500">Horaires</dt>
+                      <dt className="text-sm font-medium text-gray-500">
+                        Horaires
+                      </dt>
                       <dd className="mt-1 text-sm text-gray-900">
                         {course.heure_debut} - {course.heure_fin}
                       </dd>
@@ -271,8 +322,12 @@ const CourseDetails: React.FC = () => {
                   )}
                   {course.salle && (
                     <div>
-                      <dt className="text-sm font-medium text-gray-500">Salle</dt>
-                      <dd className="mt-1 text-sm text-gray-900">{course.salle}</dd>
+                      <dt className="text-sm font-medium text-gray-500">
+                        Salle
+                      </dt>
+                      <dd className="mt-1 text-sm text-gray-900">
+                        {course.salle}
+                      </dd>
                     </div>
                   )}
                 </dl>
@@ -292,7 +347,9 @@ const CourseDetails: React.FC = () => {
                   <div className="text-3xl font-bold text-indigo-600">
                     {course.capacite_actuelle || 0} / {course.capacite_max}
                   </div>
-                  <div className="text-sm text-gray-600 mt-1">Étudiants inscrits</div>
+                  <div className="text-sm text-gray-600 mt-1">
+                    Étudiants inscrits
+                  </div>
                 </div>
 
                 {/* Barre de progression */}
@@ -304,10 +361,12 @@ const CourseDetails: React.FC = () => {
                   <div className="w-full bg-gray-200 rounded-full h-2">
                     <div
                       className={clsx(
-                        'h-2 rounded-full transition-all',
-                        tauxRemplissage >= 100 ? 'bg-red-600' :
-                        tauxRemplissage >= 80 ? 'bg-yellow-600' :
-                        'bg-green-600'
+                        "h-2 rounded-full transition-all",
+                        tauxRemplissage >= 100
+                          ? "bg-red-600"
+                          : tauxRemplissage >= 80
+                            ? "bg-yellow-600"
+                            : "bg-green-600",
                       )}
                       style={{ width: `${Math.min(tauxRemplissage, 100)}%` }}
                     ></div>
@@ -318,7 +377,10 @@ const CourseDetails: React.FC = () => {
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600">Places restantes</span>
                     <span className="font-medium text-gray-900">
-                      {Math.max(0, course.capacite_max - (course.capacite_actuelle || 0))}
+                      {Math.max(
+                        0,
+                        course.capacite_max - (course.capacite_actuelle || 0),
+                      )}
                     </span>
                   </div>
                 </div>
@@ -357,7 +419,7 @@ const CourseDetails: React.FC = () => {
         </div>
       )}
 
-      {activeTab === 'enrolled' && (
+      {activeTab === "enrolled" && (
         <div className="bg-white shadow rounded-lg p-6">
           <div className="text-center py-12">
             <i className="ri-user-line text-4xl text-gray-400"></i>
@@ -368,7 +430,7 @@ const CourseDetails: React.FC = () => {
         </div>
       )}
 
-      {activeTab === 'schedule' && (
+      {activeTab === "schedule" && (
         <div className="bg-white shadow rounded-lg p-6">
           <div className="text-center py-12">
             <i className="ri-calendar-line text-4xl text-gray-400"></i>

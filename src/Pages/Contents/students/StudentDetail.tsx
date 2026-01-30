@@ -3,6 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import clsx from 'clsx';
 import { useStudents } from '../../../Contexts/StudentsContext';
 import DeleteConfirmModal from '../Modals/DeleteConfirmModal';
+import { Button } from '../../components/Button';
 
 const StudentDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -138,27 +139,30 @@ const StudentDetails: React.FC = () => {
                 </p>
               </div>
               <div className="mt-6 flex flex-col justify-stretch space-y-3 sm:flex-row sm:space-y-0 sm:space-x-4">
-                <button
-                  onClick={handleEdit}
-                  className="inline-flex justify-center items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+                <Button
+                  action={handleEdit}
+                  variant='perso'
+                  supStyle="inline-flex justify-center items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
                 >
                   <i className="ri-edit-line mr-2"></i>
                   Modifier
-                </button>
-                <button
-                  onClick={handleToggleStatus}
-                  className="inline-flex justify-center items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+                </Button>
+                <Button
+                  action={handleToggleStatus}
+                  variant='perso'
+                  supStyle="inline-flex justify-center items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
                 >
                   <i className="ri-refresh-line mr-2"></i>
                   Changer statut
-                </button>
-                <button
-                  onClick={handleDelete}
-                  className="inline-flex justify-center items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700"
+                </Button>
+                <Button
+                  action={handleDelete}
+                  variant='perso'
+                  supStyle="inline-flex justify-center items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700"
                 >
                   <i className="ri-delete-bin-line mr-2"></i>
                   Supprimer
-                </button>
+                </Button>
               </div>
             </div>
           </div>
@@ -173,9 +177,10 @@ const StudentDetails: React.FC = () => {
       {/* Onglets */}
       <div className="border-b border-gray-200">
         <nav className="-mb-px flex space-x-8">
-          <button
-            onClick={() => setActiveTab('info')}
-            className={clsx(
+          <Button
+            action={() => setActiveTab('info')}
+            variant='perso'
+            supStyle={clsx(
               'whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm',
               activeTab === 'info'
                 ? 'border-indigo-500 text-indigo-600'
@@ -184,10 +189,11 @@ const StudentDetails: React.FC = () => {
           >
             <i className="ri-information-line mr-2"></i>
             Informations
-          </button>
-          <button
-            onClick={() => setActiveTab('courses')}
-            className={clsx(
+          </Button>
+          <Button
+            action={() => setActiveTab('courses')}
+            variant='perso'
+            supStyle={clsx(
               'whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm',
               activeTab === 'courses'
                 ? 'border-indigo-500 text-indigo-600'
@@ -196,10 +202,11 @@ const StudentDetails: React.FC = () => {
           >
             <i className="ri-book-line mr-2"></i>
             Cours ({state.studentCourses.length})
-          </button>
-          <button
-            onClick={() => setActiveTab('grades')}
-            className={clsx(
+          </Button>
+          <Button
+            action={() => setActiveTab('grades')}
+            variant='perso'
+            supStyle={clsx(
               'whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm',
               activeTab === 'grades'
                 ? 'border-indigo-500 text-indigo-600'
@@ -208,7 +215,7 @@ const StudentDetails: React.FC = () => {
           >
             <i className="ri-bar-chart-line mr-2"></i>
             Notes ({state.studentNotes.length})
-          </button>
+          </Button>
         </nav>
       </div>
 
@@ -361,26 +368,28 @@ const StudentDetails: React.FC = () => {
                 Actions
               </h2>
               <div className="space-y-3">
-                <button
-                  onClick={() => setActiveTab('courses')}
-                  className="w-full flex items-center justify-between px-4 py-3 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors"
+                <Button
+                  action={() => setActiveTab('courses')}
+                  variant='perso'
+                  supStyle="w-full flex items-center justify-between px-4 py-3 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors"
                 >
                   <span className="text-sm font-medium text-gray-700">
                     <i className="ri-book-line mr-2"></i>
                     Voir les cours
                   </span>
                   <i className="ri-arrow-right-s-line text-gray-400"></i>
-                </button>
-                <button
-                  onClick={() => setActiveTab('grades')}
-                  className="w-full flex items-center justify-between px-4 py-3 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors"
+                </Button>
+                <Button
+                  action={() => setActiveTab('grades')}
+                  variant='perso'
+                  supStyle="w-full flex items-center justify-between px-4 py-3 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors"
                 >
                   <span className="text-sm font-medium text-gray-700">
                     <i className="ri-bar-chart-line mr-2"></i>
                     Voir les notes
                   </span>
                   <i className="ri-arrow-right-s-line text-gray-400"></i>
-                </button>
+                </Button>
               </div>
             </div>
           </div>

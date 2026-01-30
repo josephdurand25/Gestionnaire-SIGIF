@@ -5,6 +5,9 @@ import clsx from 'clsx';
 import DeleteConfirmModal from '../Modals/DeleteConfirmModal';
 import type { IEtudiant } from '../../../types/IStudent';
 import type { StatutAcademique, StatutUtilisateur } from '../../../types/IGeneral';
+import { Button } from '../../components/Button';
+import { Select } from '../../components/Select';
+import { Input } from '../../components/Input';
 
 const StudentsList: React.FC = () => {
   const { state, actions } = useStudents();
@@ -78,22 +81,24 @@ const StudentsList: React.FC = () => {
                 <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
                   <i className="ri-search-line text-gray-400"></i>
                 </div>
-                <input
+                <Input
                   type="text"
+                  labelText=''
                   value={state.searchTerm}
                   onChange={handleSearch}
                   onKeyPress={(e) => e.key === 'Enter' && actions.applyFilters()}
                   placeholder="Rechercher un étudiant..."
-                  className="block w-full rounded-md border-0 py-2 pl-10 pr-3 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  inputStyle="block w-full rounded-md border-0 py-2 pl-10 pr-3 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
               </div>
             </div>
 
             {/* Boutons d'action */}
             <div className="flex gap-2">
-              <button
-                onClick={() => setShowFilters(!showFilters)}
-                className={clsx(
+              <Button
+                action={() => setShowFilters(!showFilters)}
+                variant='perso'
+                supStyle={clsx(
                   'inline-flex items-center rounded-md px-3 py-2 text-sm font-semibold shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2',
                   showFilters
                     ? 'bg-indigo-600 text-white hover:bg-indigo-500'
@@ -102,14 +107,15 @@ const StudentsList: React.FC = () => {
               >
                 <i className="ri-filter-line mr-2"></i>
                 Filtres
-              </button>
-              <button
-                onClick={actions.applyFilters}
-                className="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2"
+              </Button>
+              <Button
+                action={actions.applyFilters}
+                variant='perso'
+                supStyle="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2"
               >
                 <i className="ri-search-line mr-2"></i>
                 Rechercher
-              </button>
+              </Button>
             </div>
           </div>
 
@@ -117,59 +123,68 @@ const StudentsList: React.FC = () => {
           {showFilters && (
             <div className="mt-4 grid grid-cols-1 gap-4 border-t border-gray-200 pt-4 sm:grid-cols-3">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Filière
-                </label>
-                <select
-                title='filiere'
+                
+                <Select
+                  title='filiere'
+                  labelText='Filière'
+                  indication='Toutes les filières'
                   value={state.filters.filiere || ''}
                   onChange={(e) => handleFilterChange('filiere', e.target.value)}
-                  className="block w-full rounded-md border-0 py-2 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                >
-                  <option value="">Toutes les filières</option>
-                  <option value="Informatique">Informatique</option>
-                  <option value="Mathématiques">Mathématiques</option>
-                  <option value="Physique">Physique</option>
-                  <option value="Chimie">Chimie</option>
-                  <option value="Biologie">Biologie</option>
-                </select>
+                  styleSelect="block w-full rounded-md border-0 py-2 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                
+                  options={[
+                        { id: 1, value: "Informatique", label: "Informatique" },
+                        { id: 2, value: "Mathématiques", label: "Mathématiques " },
+                        { id: 3, value: "Physique", label: "Physique " },
+                        { id: 4, value: "Chimie", label: "Chimie " },
+                        { id: 5, value: "Biologie", label: "Biologie " }  
+                      ]}
+                />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                {/* <label className="block text-sm font-medium text-gray-700 mb-1">
                   Niveau
-                </label>
-                <select
-                    title='niveau'
+                </label> */}
+                <Select
+                  title='niveau'
+                  labelText='Niveau'
+                  indication='Toutes les niveaux'
                   value={state.filters.niveau || ''}
                   onChange={(e) => handleFilterChange('niveau', e.target.value)}
-                  className="block w-full rounded-md border-0 py-2 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                >
-                  <option value="">Tous les niveaux</option>
-                  <option value="L1">Licence 1</option>
-                  <option value="L2">Licence 2</option>
-                  <option value="L3">Licence 3</option>
-                  <option value="M1">Master 1</option>
-                  <option value="M2">Master 2</option>
-                </select>
+                  styleSelect="block w-full rounded-md border-0 py-2 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                
+                  options={[
+                        { id: 1, value: "L1", label: "Licence 1" },
+                        { id: 2, value: "L2", label: "Licence 2" },
+                        { id: 3, value: "L3", label: "Licence 3" },
+                        { id: 4, value: "M1", label: "Master 1" },
+                        { id: 5, value: "M2", label: "Master 2" }  
+                      ]}
+                  
+                  
+                />
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Statut
                 </label>
-                <select
-                    title='statut'
+                <Select
+                  title='statut'
+                  labelText='Niveau'
+                  indication='Toutes les Statut'
                   value={state.filters.statut || ''}
                   onChange={(e) => handleFilterChange('statut', e.target.value)}
-                  className="block w-full rounded-md border-0 py-2 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                >
-                  <option value="">Tous les statuts</option>
-                  <option value="actif">Actif</option>
-                  <option value="inactif">Inactif</option>
-                  <option value="suspendu">Suspendu</option>
-                  <option value="diplome">Diplômé</option>
-                </select>
+                  styleSelect="block w-full rounded-md border-0 py-2 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                
+                  options={[
+                        { id: 1, value: "actif", label: "Actif " },
+                        { id: 2, value: "inactif", label: "Inactif " },
+                        { id: 3, value: "suspendu", label: "Suspendu" },
+                        { id: 4, value: "diplome", label: "Diplômé" },
+                      ]}
+                />
               </div>
             </div>
           )}
@@ -181,57 +196,62 @@ const StudentsList: React.FC = () => {
               {state.searchTerm && (
                 <span className="inline-flex items-center rounded-full bg-indigo-50 px-3 py-1 text-xs font-medium text-indigo-700">
                   Recherche: {state.searchTerm}
-                  <button
+                  <Button
                     title='Rechercher'
-                    onClick={() => actions.setSearchTerm('')}
-                    className="ml-1 inline-flex h-4 w-4 items-center justify-center rounded-full hover:bg-indigo-200"
+                    variant='perso'
+                    action={() => actions.setSearchTerm('')}
+                    supStyle="ml-1 inline-flex h-4 w-4 items-center justify-center rounded-full hover:bg-indigo-200"
                   >
                     <i className="ri-close-line text-xs"></i>
-                  </button>
+                  </Button>
                 </span>
               )}
               {state.filters.filiere && (
                 <span className="inline-flex items-center rounded-full bg-indigo-50 px-3 py-1 text-xs font-medium text-indigo-700">
                   Filière: {state.filters.filiere}
-                  <button
-                  title='filiere'
-                    onClick={() => handleFilterChange('filiere', '')}
-                    className="ml-1 inline-flex h-4 w-4 items-center justify-center rounded-full hover:bg-indigo-200"
+                  <Button
+                    title='filiere'
+                    variant='perso'   
+                    action={() => handleFilterChange('filiere', '')}
+                    supStyle="ml-1 inline-flex h-4 w-4 items-center justify-center rounded-full hover:bg-indigo-200"
                   >
                     <i className="ri-close-line text-xs"></i>
-                  </button>
+                  </Button>
                 </span>
               )}
               {state.filters.niveau && (
                 <span className="inline-flex items-center rounded-full bg-indigo-50 px-3 py-1 text-xs font-medium text-indigo-700">
                   Niveau: {state.filters.niveau}
-                  <button
+                  <Button
                     title='niveau-filtre'
-                    onClick={() => handleFilterChange('niveau', '')}
-                    className="ml-1 inline-flex h-4 w-4 items-center justify-center rounded-full hover:bg-indigo-200"
+                    variant='perso' 
+                    action={() => handleFilterChange('niveau', '')}
+                    supStyle="ml-1 inline-flex h-4 w-4 items-center justify-center rounded-full hover:bg-indigo-200"
                   >
                     <i className="ri-close-line text-xs"></i>
-                  </button>
+                  </Button>
                 </span>
               )}
               {state.filters.statut && (
                 <span className="inline-flex items-center rounded-full bg-indigo-50 px-3 py-1 text-xs font-medium text-indigo-700">
                   Statut: {state.filters.statut}
-                  <button
+                  <Button
                     title='statut'
-                    onClick={() => handleFilterChange('statut', '')}
-                    className="ml-1 inline-flex h-4 w-4 items-center justify-center rounded-full hover:bg-indigo-200"
+                    variant='perso' 
+                    action={() => handleFilterChange('statut', '')}
+                    supStyle="ml-1 inline-flex h-4 w-4 items-center justify-center rounded-full hover:bg-indigo-200"
                   >
                     <i className="ri-close-line text-xs"></i>
-                  </button>
+                  </Button>
                 </span>
               )}
-              <button
-                onClick={actions.resetFilters}
-                className="text-xs text-indigo-600 hover:text-indigo-500 font-medium"
+              <Button
+                action={actions.resetFilters}
+                variant='perso' 
+                supStyle="text-xs text-indigo-600 hover:text-indigo-500 font-medium"
               >
                 Réinitialiser
-              </button>
+              </Button>
             </div>
           )}
         </div>
@@ -251,13 +271,14 @@ const StudentsList: React.FC = () => {
               Commencez par ajouter un nouvel étudiant.
             </p>
             <div className="mt-6">
-              <button
-                onClick={() => navigate('/students/create')}
-                className="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500"
+              <Button
+                action={() => navigate('/students/create')}
+                variant='perso' 
+                supStyle="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500"
               >
                 <i className="ri-add-line mr-2"></i>
                 Nouvel étudiant
-              </button>
+              </Button>
             </div>
           </div>
         ) : (
@@ -335,23 +356,25 @@ const StudentsList: React.FC = () => {
                           >
                             <i className="ri-eye-line text-lg"></i>
                           </Link>
-                          <button
-                            onClick={() => handleEditStudent(student)}
-                            className="text-blue-600 hover:text-blue-900"
+                          <Button
+                            action={() => handleEditStudent(student)}
+                            variant='perso'
+                            supStyle="text-blue-600 hover:text-blue-900"
                             title="Modifier"
                           >
                             <i className="ri-edit-line text-lg"></i>
-                          </button>
-                          <button
-                            onClick={() => {
+                          </Button>
+                          <Button
+                            action={() => {
                               actions.setSelectedStudent(student);
                               actions.toggleModal('studentDelete', true);
                             }}
-                            className="text-red-600 hover:text-red-900"
+                            variant='perso'
+                            supStyle="text-red-600 hover:text-red-900"
                             title="Supprimer"
                           >
                             <i className="ri-delete-bin-line text-lg"></i>
-                          </button>
+                          </Button>
                         </div>
                       </td>
                     </tr>
@@ -363,20 +386,22 @@ const StudentsList: React.FC = () => {
             {/* Pagination */}
             <div className="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6">
               <div className="flex flex-1 justify-between sm:hidden">
-                <button
-                  onClick={() => handlePageChange(state.pagination.page - 1)}
+                <Button
+                  action={() => handlePageChange(state.pagination.page - 1)}
+                  variant='perso'
                   disabled={state.pagination.page === 1}
-                  className="relative inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                  supStyle="relative inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Précédent
-                </button>
-                <button
-                  onClick={() => handlePageChange(state.pagination.page + 1)}
+                </Button>
+                <Button
+                  action={() => handlePageChange(state.pagination.page + 1)}
+                  variant='perso'
                   disabled={state.pagination.page === state.pagination.totalPages}
-                  className="relative ml-3 inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                  supStyle="relative ml-3 inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Suivant
-                </button>
+                </Button>
               </div>
               <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
                 <div>
@@ -398,14 +423,15 @@ const StudentsList: React.FC = () => {
                 </div>
                 <div>
                   <nav className="isolate inline-flex -space-x-px rounded-md shadow-sm">
-                    <button
+                    <Button
                       title='prev'
-                      onClick={() => handlePageChange(state.pagination.page - 1)}
+                      action={() => handlePageChange(state.pagination.page - 1)}
+                      variant='perso'
                       disabled={state.pagination.page === 0}
-                      className="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 disabled:opacity-50 disabled:cursor-not-allowed"
+                      supStyle="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       <i className="ri-arrow-left-s-line"></i>
-                    </button>
+                    </Button>
                     {Array.from({ length: state.pagination.totalPages }, (_, i) => i + 1)
                       .filter(page => {
                         return (
@@ -421,9 +447,10 @@ const StudentsList: React.FC = () => {
                               <span className="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-700 ring-1 ring-inset ring-gray-300">
                                 ...
                               </span>
-                              <button
-                                onClick={() => handlePageChange(page)}
-                                className={clsx(
+                              <Button
+                                action={() => handlePageChange(page)}
+                                variant='perso'
+                                supStyle={clsx(
                                   'relative inline-flex items-center px-4 py-2 text-sm font-semibold focus:z-20',
                                   page === state.pagination.page
                                     ? 'z-10 bg-indigo-600 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'
@@ -431,15 +458,16 @@ const StudentsList: React.FC = () => {
                                 )}
                               >
                                 {page}
-                              </button>
+                              </Button>
                             </React.Fragment>
                           );
                         }
                         return (
-                          <button
+                          <Button
                             key={page}
-                            onClick={() => handlePageChange(page)}
-                            className={clsx(
+                            action={() => handlePageChange(page)}
+                            variant='perso'
+                            supStyle={clsx(
                               'relative inline-flex items-center px-4 py-2 text-sm font-semibold focus:z-20',
                               page === state.pagination.page
                                 ? 'z-10 bg-indigo-600 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'
@@ -447,17 +475,18 @@ const StudentsList: React.FC = () => {
                             )}
                           >
                             {page}
-                          </button>
+                          </Button>
                         );
                       })}
-                    <button
+                    <Button
                       title='next'
-                      onClick={() => handlePageChange(state.pagination.page + 1)}
+                      action={() => handlePageChange(state.pagination.page + 1)}
+                      variant='perso'
                       disabled={state.pagination.page === state.pagination.totalPages}
-                      className="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 disabled:opacity-50 disabled:cursor-not-allowed"
+                      supStyle="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       <i className="ri-arrow-right-s-line"></i>
-                    </button>
+                    </Button>
                   </nav>
                 </div>
               </div>
@@ -536,13 +565,14 @@ const StudentsListV2: React.FC = () => {
           </p>
         </div>
         <div className="mt-4 sm:mt-0">
-          <button
-            onClick={() => navigate('/students/create')}
-            className="inline-flex items-center rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2"
+          <Button
+            action={() => navigate('/students/create')}
+            variant='perso'
+            supStyle="inline-flex items-center rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2"
           >
             <i className="ri-add-line mr-2"></i>
             Nouvel étudiant
-          </button>
+          </Button>
         </div>
       </div>
 
@@ -556,22 +586,24 @@ const StudentsListV2: React.FC = () => {
                 <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
                   <i className="ri-search-line text-gray-400"></i>
                 </div>
-                <input
+                <Input
                   type="text"
+                  labelText=''
                   value={state.searchTerm}
                   onChange={handleSearch}
                   onKeyPress={(e) => e.key === 'Enter' && actions.applyFilters()}
                   placeholder="Rechercher un étudiant..."
-                  className="block w-full rounded-md border-0 py-2 pl-10 pr-3 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  inputStyle="block w-full rounded-md border-0 py-2 pl-10 pr-3 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
               </div>
             </div>
 
             {/* Boutons d'action */}
             <div className="flex gap-2">
-              <button
-                onClick={() => setShowFilters(!showFilters)}
-                className={clsx(
+              <Button
+                action={() => setShowFilters(!showFilters)}
+                variant='perso'
+                supStyle={clsx(
                   'inline-flex items-center rounded-md px-3 py-2 text-sm font-semibold shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2',
                   showFilters
                     ? 'bg-indigo-600 text-white hover:bg-indigo-500'
@@ -580,14 +612,15 @@ const StudentsListV2: React.FC = () => {
               >
                 <i className="ri-filter-line mr-2"></i>
                 Filtres
-              </button>
-              <button
-                onClick={actions.applyFilters}
-                className="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2"
+              </Button>
+              <Button
+                action={actions.applyFilters}
+                variant='perso'
+                supStyle="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2"
               >
                 <i className="ri-search-line mr-2"></i>
                 Rechercher
-              </button>
+              </Button>
             </div>
           </div>
 
@@ -614,58 +647,63 @@ const StudentsListV2: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Niveau
-                </label>
-                <select
+               
+                <Select
                   title='niveau'
+                  labelText='Niveau'
+                  indication='Tous les niveaux'
                   value={state.filters.niveau || ''}
                   onChange={(e) => handleFilterChange('niveau', e.target.value)}
-                  className="block w-full rounded-md border-0 py-2 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                >
-                  <option value="">Tous les niveaux</option>
-                  <option value="L1">Licence 1</option>
-                  <option value="L2">Licence 2</option>
-                  <option value="L3">Licence 3</option>
-                  <option value="M1">Master 1</option>
-                  <option value="M2">Master 2</option>
-                </select>
+                  styleSelect="block w-full rounded-md border-0 py-2 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                
+                  options={[
+                        { id: 1, value: "L1", label: "Licence 1" },
+                        { id: 2, value: "L2", label: "Licence 2" },
+                        { id: 3, value: "L3", label: "Licence 3" },
+                        { id: 4, value: "M1", label: "Master 1" },
+                        { id: 5, value: "M2", label: "Master 2" }  
+                      ]}
+                 
+                />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Statut utilisateur
-                </label>
-                <select
+                
+                <Select
                   title='statut-utilisateur'
+                  labelText='Statut utilisateur'
+                  indication='Tous les statuts'
                   value={state.filters.statut || ''}
                   onChange={(e) => handleFilterChange('statut', e.target.value)}
                   className="block w-full rounded-md border-0 py-2 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                >
-                  <option value="">Tous les statuts</option>
-                  <option value="actif">Actif</option>
-                  <option value="inactif">Inactif</option>
-                  <option value="suspendu">Suspendu</option>
-                </select>
+                
+                  options={[
+                        { id: 1, value: "actif", label: "Actif " },
+                        { id: 2, value: "inactif", label: "Inactif " },
+                        { id: 3, value: "suspendu", label: "Suspendu " }  
+                      ]}
+                />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Statut académique
-                </label>
-                <select
+                
+                <Select
                   title='statut-academique'
+                  labelText='Statut académique'
+                  indication='Tous les statuts'
                   value={state.filters.statut_academique || ''}
                   onChange={(e) => handleFilterChange('statut_academique', e.target.value)}
                   className="block w-full rounded-md border-0 py-2 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                >
-                  <option value="">Tous les statuts</option>
-                  <option value="inscrit">Inscrit</option>
-                  <option value="non_inscrit">Non inscrit</option>
-                  <option value="diplome">Diplômé</option>
-                  <option value="abandon">Abandon</option>
-                  <option value="exclu">Exclu</option>
-                </select>
+                
+                   options={[
+                        { id: 1, value: "inscrit", label: "Inscrit " },
+                        { id: 2, value: "non_inscrit", label: "Non inscrit" },
+                        { id: 3, value: "diplome", label: "Diplômé " }  ,
+                        { id: 4, value: "abandon", label: "Abandon " },  
+                        { id: 5, value: "exclu", label: "Exclu " }  
+                      ]}
+                 
+                />
               </div>
             </div>
           )}
@@ -677,69 +715,75 @@ const StudentsListV2: React.FC = () => {
               {state.searchTerm && (
                 <span className="inline-flex items-center rounded-full bg-indigo-50 px-3 py-1 text-xs font-medium text-indigo-700">
                   Recherche: {state.searchTerm}
-                  <button
+                  <Button
                     title='Rechercher'
-                    onClick={() => actions.setSearchTerm('')}
-                    className="ml-1 inline-flex h-4 w-4 items-center justify-center rounded-full hover:bg-indigo-200"
+                    action={() => actions.setSearchTerm('')}
+                    variant='perso'
+                    supStyle="ml-1 inline-flex h-4 w-4 items-center justify-center rounded-full hover:bg-indigo-200"
                   >
                     <i className="ri-close-line text-xs"></i>
-                  </button>
+                  </Button>
                 </span>
               )}
               {state.filters.filiere && (
                 <span className="inline-flex items-center rounded-full bg-indigo-50 px-3 py-1 text-xs font-medium text-indigo-700">
                   Filière: {state.filters.filiere}
-                  <button
+                  <Button
                     title='filiere'
-                    onClick={() => handleFilterChange('filiere', '')}
-                    className="ml-1 inline-flex h-4 w-4 items-center justify-center rounded-full hover:bg-indigo-200"
+                    action={() => handleFilterChange('filiere', '')}
+                    variant='perso'
+                    supStyle="ml-1 inline-flex h-4 w-4 items-center justify-center rounded-full hover:bg-indigo-200"
                   >
                     <i className="ri-close-line text-xs"></i>
-                  </button>
+                  </Button>
                 </span>
               )}
               {state.filters.niveau && (
                 <span className="inline-flex items-center rounded-full bg-indigo-50 px-3 py-1 text-xs font-medium text-indigo-700">
                   Niveau: {state.filters.niveau}
-                  <button
+                  <Button
                     title='niveau-filtre'
-                    onClick={() => handleFilterChange('niveau', '')}
-                    className="ml-1 inline-flex h-4 w-4 items-center justify-center rounded-full hover:bg-indigo-200"
+                    action={() => handleFilterChange('niveau', '')}
+                    variant='perso'
+                    supStyle="ml-1 inline-flex h-4 w-4 items-center justify-center rounded-full hover:bg-indigo-200"
                   >
                     <i className="ri-close-line text-xs"></i>
-                  </button>
+                  </Button>
                 </span>
               )}
               {state.filters.statut && (
                 <span className="inline-flex items-center rounded-full bg-indigo-50 px-3 py-1 text-xs font-medium text-indigo-700">
                   Statut: {state.filters.statut}
-                  <button
+                  <Button
                     title='statut-utilisateur'
-                    onClick={() => handleFilterChange('statut', '')}
-                    className="ml-1 inline-flex h-4 w-4 items-center justify-center rounded-full hover:bg-indigo-200"
+                    action={() => handleFilterChange('statut', '')}
+                    variant='perso'
+                    supStyle="ml-1 inline-flex h-4 w-4 items-center justify-center rounded-full hover:bg-indigo-200"
                   >
                     <i className="ri-close-line text-xs"></i>
-                  </button>
+                  </Button>
                 </span>
               )}
               {state.filters.statut_academique && (
                 <span className="inline-flex items-center rounded-full bg-indigo-50 px-3 py-1 text-xs font-medium text-indigo-700">
                   Statut académique: {state.filters.statut_academique}
-                  <button
+                  <Button
                     title='statut-academique'
-                    onClick={() => handleFilterChange('statut_academique', '')}
-                    className="ml-1 inline-flex h-4 w-4 items-center justify-center rounded-full hover:bg-indigo-200"
+                    action={() => handleFilterChange('statut_academique', '')}
+                    variant='perso'
+                    supStyle="ml-1 inline-flex h-4 w-4 items-center justify-center rounded-full hover:bg-indigo-200"
                   >
                     <i className="ri-close-line text-xs"></i>
-                  </button>
+                  </Button>
                 </span>
               )}
-              <button
-                onClick={actions.resetFilters}
-                className="text-xs text-indigo-600 hover:text-indigo-500 font-medium"
+              <Button
+                action={actions.resetFilters}
+                variant='perso'
+                supStyle="text-xs text-indigo-600 hover:text-indigo-500 font-medium"
               >
                 Réinitialiser
-              </button>
+              </Button>
             </div>
           )}
         </div>
@@ -759,13 +803,14 @@ const StudentsListV2: React.FC = () => {
               Commencez par ajouter un nouvel étudiant.
             </p>
             <div className="mt-6">
-              <button
-                onClick={() => navigate('/students/create')}
-                className="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500"
+              <Button
+                action={() => navigate('/students/create')}
+                variant='perso'
+                supStyle="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500"
               >
                 <i className="ri-add-line mr-2"></i>
                 Nouvel étudiant
-              </button>
+              </Button>
             </div>
           </div>
         ) : (
@@ -849,23 +894,25 @@ const StudentsListV2: React.FC = () => {
                           >
                             <i className="ri-eye-line text-lg"></i>
                           </Link>
-                          <button
-                            onClick={() => handleEditStudent(student)}
-                            className="text-blue-600 hover:text-blue-900"
+                          <Button
+                            action={() => handleEditStudent(student)}
+                            variant='perso'
+                            supStyle="text-blue-600 hover:text-blue-900"
                             title="Modifier"
                           >
                             <i className="ri-edit-line text-lg"></i>
-                          </button>
-                          <button
-                            onClick={() => {
+                          </Button>
+                          <Button
+                            action={() => {
                               actions.setSelectedStudent(student);
                               actions.toggleModal('studentDelete', true);
                             }}
-                            className="text-red-600 hover:text-red-900"
+                            variant='perso'
+                            supStyle="text-red-600 hover:text-red-900"
                             title="Supprimer"
                           >
                             <i className="ri-delete-bin-line text-lg"></i>
-                          </button>
+                          </Button>
                         </div>
                       </td>
                     </tr>
@@ -877,20 +924,22 @@ const StudentsListV2: React.FC = () => {
             {/* Pagination - reste identique */}
             <div className="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6">
               <div className="flex flex-1 justify-between sm:hidden">
-                <button
-                  onClick={() => handlePageChange(state.pagination.page - 1)}
+                <Button
+                  action={() => handlePageChange(state.pagination.page - 1)}
+                  variant='perso'
                   disabled={state.pagination.page === 1}
-                  className="relative inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                  supStyle="relative inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Précédent
-                </button>
-                <button
-                  onClick={() => handlePageChange(state.pagination.page + 1)}
+                </Button>
+                <Button
+                  action={() => handlePageChange(state.pagination.page + 1)}
+                  variant='perso'
                   disabled={state.pagination.page === state.pagination.totalPages}
-                  className="relative ml-3 inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                  supStyle="relative ml-3 inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Suivant
-                </button>
+                </Button>
               </div>
               <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
                 <div>
@@ -912,14 +961,15 @@ const StudentsListV2: React.FC = () => {
                 </div>
                 <div>
                   <nav className="isolate inline-flex -space-x-px rounded-md shadow-sm">
-                    <button
+                    <Button
                       title='prev'
-                      onClick={() => handlePageChange(state.pagination.page - 1)}
+                      action={() => handlePageChange(state.pagination.page - 1)}
+                      variant='perso'
                       disabled={state.pagination.page === 0}
-                      className="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 disabled:opacity-50 disabled:cursor-not-allowed"
+                      supStyle="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       <i className="ri-arrow-left-s-line"></i>
-                    </button>
+                    </Button>
                     {Array.from({ length: state.pagination.totalPages }, (_, i) => i + 1)
                       .filter(page => {
                         return (
@@ -935,9 +985,10 @@ const StudentsListV2: React.FC = () => {
                               <span className="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-700 ring-1 ring-inset ring-gray-300">
                                 ...
                               </span>
-                              <button
-                                onClick={() => handlePageChange(page)}
-                                className={clsx(
+                              <Button
+                                action={() => handlePageChange(page)}
+                                varinat='perso'
+                                supStyle={clsx(
                                   'relative inline-flex items-center px-4 py-2 text-sm font-semibold focus:z-20',
                                   page === state.pagination.page
                                     ? 'z-10 bg-indigo-600 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'
@@ -945,15 +996,16 @@ const StudentsListV2: React.FC = () => {
                                 )}
                               >
                                 {page}
-                              </button>
+                              </Button>
                             </React.Fragment>
                           );
                         }
                         return (
-                          <button
+                          <Button
                             key={page}
-                            onClick={() => handlePageChange(page)}
-                            className={clsx(
+                            action={() => handlePageChange(page)}
+                            variant='perso'
+                            supStyle={clsx(
                               'relative inline-flex items-center px-4 py-2 text-sm font-semibold focus:z-20',
                               page === state.pagination.page
                                 ? 'z-10 bg-indigo-600 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'
@@ -961,17 +1013,18 @@ const StudentsListV2: React.FC = () => {
                             )}
                           >
                             {page}
-                          </button>
+                          </Button>
                         );
                       })}
-                    <button
+                    <Button
                       title='next'
-                      onClick={() => handlePageChange(state.pagination.page + 1)}
+                      action={() => handlePageChange(state.pagination.page + 1)}
+                      variant='perso'
                       disabled={state.pagination.page === state.pagination.totalPages}
-                      className="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 disabled:opacity-50 disabled:cursor-not-allowed"
+                      supStyle="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       <i className="ri-arrow-right-s-line"></i>
-                    </button>
+                    </Button>
                   </nav>
                 </div>
               </div>

@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useStudents } from '../../../Contexts/StudentsContext';
 import clsx from 'clsx';
 import { useNavigate, useParams } from 'react-router';
+import { Button } from '../../components/Button';
+import { Select } from '../../components/Select';
+import { Input } from '../../components/Input';
 
 interface StudentFormModalProps {
   isOpen?: boolean;
@@ -127,13 +130,13 @@ const StudentForm: React.FC<StudentFormModalProps> = () => {
 
           </div>
           <div className="mt-4 sm:mt-0">
-            <button
-              onClick={() => {actions.setSelectedStudent(null); navigate('/students');}}
-              className="inline-flex items-center rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2"
+            <Button
+              action={() => {actions.setSelectedStudent(null); navigate('/students');}}
+              supStyle="inline-flex items-center rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2"
             >
               <i className="ri-list-view-line mr-2"></i>
               Liste des étudiants
-            </button>
+            </Button>
           </div>
       </div>
       <div className="w-full rounded-lg  shadow-xl transition-all">
@@ -183,81 +186,89 @@ const StudentForm: React.FC<StudentFormModalProps> = () => {
                   </div> */}
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    {/* <label className="block text-sm font-medium text-gray-700 mb-1">
                       Genre *
-                    </label>
-                    <select
+                    </label> */}
+                    <Select
                       title='gentre'
+                      labelText="Genre "
+                      requis
+                      indication=" Sélectionner"
                       name="genre"
                       value={formData.genre}
                       onChange={handleChange}
-                      required
-                      className="block w-full rounded-md border-0 py-2 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                    >
-                      <option value="">Sélectionner</option>
-                      <option value="homme">Masculin</option>
-                      <option value="femme">Féminin</option>
-                      <option value="autre">Autre</option>
-                    </select>
+                      styleSelect="block w-full rounded-md border-0 py-2 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    
+                       options={[
+                          { id: 1, value: "homme", label: "Masculin" },
+                          { id: 2, value: "femme", label: "Féminin" },
+                          { id: 3, value: "autre", label: "Autre" },
+                           
+                        ]}
+                    />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    {/* <label className="block text-sm font-medium text-gray-700 mb-1">
                       Prénom *
-                    </label>
-                    <input
+                    </label> */}
+                    <Input
                       title='prenom'
+                      labelText="Prénom "
                       type="text"
                       name="prenom"
                       value={formData.prenom}
                       onChange={handleChange}
                       required
-                      className="block w-full rounded-md border-0 py-2 px-3 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                      inputStyle="block w-full rounded-md border-0 py-2 px-3 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    {/* <label className="block text-sm font-medium text-gray-700 mb-1">
                       Nom *
-                    </label>
-                    <input
+                    </label> */}
+                    <Input
                       title='nom'
                       type="text"
+                      labelText='Nom'
                       name="nom"
                       value={formData.nom}
                       onChange={handleChange}
                       required
-                      className="block w-full rounded-md border-0 py-2 px-3 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                      inputStyle="block w-full rounded-md border-0 py-2 px-3 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    {/* <label className="block text-sm font-medium text-gray-700 mb-1">
                       Date de naissance *
-                    </label>
-                    <input
+                    </label> */}
+                    <Input
                       title='date naissance'
                       type="date"
+                      labelText='Date de naissance'
                       name="date_naissance"
                       value={formData.date_naissance}
                       onChange={handleChange}
                       required
-                      className="block w-full rounded-md border-0 py-2 px-3 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                      inputStyle="block w-full rounded-md border-0 py-2 px-3 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    {/* <label className="block text-sm font-medium text-gray-700 mb-1">
                       Date d'inscription *
-                    </label>
-                    <input
+                    </label> */}
+                    <Input
                       title='date inscription'
                       type="date"
+                      labelText='Date inscription'
                       name="date_inscription"
                       value={formData.date_inscription}
                       onChange={handleChange}
                       required
-                      className="block w-full rounded-md border-0 py-2 px-3 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                      inputStyle="block w-full rounded-md border-0 py-2 px-3 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                     />
                   </div>
                 </div>
@@ -268,31 +279,31 @@ const StudentForm: React.FC<StudentFormModalProps> = () => {
                 <h4 className="text-sm font-medium text-gray-900 mb-4">Contact</h4>
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    {/* <label className="block text-sm font-medium text-gray-700 mb-1">
                       Email *
-                    </label>
-                    <input
+                    </label> */}
+                    <Input
                       title='email'
                       type="email"
+                      labelText='Email'
                       name="email"
                       value={formData.email}
                       onChange={handleChange}
                       required
-                      className="block w-full rounded-md border-0 py-2 px-3 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                      inputStyle="block w-full rounded-md border-0 py-2 px-3 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Téléphone
-                    </label>
-                    <input
+                 
+                    <Input
                       title='téléphone'
                       type="tel"
+                      labelText='Téléphone'
                       name="telephone"
                       value={formData.telephone}
                       onChange={handleChange}
-                      className="block w-full rounded-md border-0 py-2 px-3 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                      inputStyle="block w-full rounded-md border-0 py-2 px-3 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                     />
                   </div>
                 </div>
@@ -303,58 +314,56 @@ const StudentForm: React.FC<StudentFormModalProps> = () => {
                 <h4 className="text-sm font-medium text-gray-900 mb-4">Adresse</h4>
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                   <div className="sm:col-span-2">
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    {/* <label className="block text-sm font-medium text-gray-700 mb-1">
                       Rue
-                    </label>
-                    <input
+                    </label> */}
+                    <Input
                       title='rue'
                       type="text"
+                      labelText='Rue'
                       name="adresse_rue"
                       value={formData.adresse_rue}
                       onChange={handleChange}
-                      className="block w-full rounded-md border-0 py-2 px-3 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                      inputStyle="block w-full rounded-md border-0 py-2 px-3 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Ville
-                    </label>
-                    <input
+                   
+                    <Input
                       title='ville'
                       type="text"
+                      labelText='Ville'
                       name="adresse_ville"
                       value={formData.adresse_ville}
                       onChange={handleChange}
-                      className="block w-full rounded-md border-0 py-2 px-3 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                      inputStyle="block w-full rounded-md border-0 py-2 px-3 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Code postal
-                    </label>
-                    <input
+                    
+                    <Input
                       title='code postale'
                       type="text"
+                      labelText='Code postal'
                       name="adresse_code_postal"
                       value={formData.adresse_code_postal}
                       onChange={handleChange}
-                      className="block w-full rounded-md border-0 py-2 px-3 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                      inputStyle="block w-full rounded-md border-0 py-2 px-3 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                     />
                   </div>
 
                   <div className="sm:col-span-2">
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Pays
-                    </label>
-                    <input
+                    
+                    <Input
                       title='pays'
+                      labelText='Pays'
                       type="text"
                       name="adresse_pays"
                       value={formData.adresse_pays}
                       onChange={handleChange}
-                      className="block w-full rounded-md border-0 py-2 px-3 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                      inputStyle="block w-full rounded-md border-0 py-2 px-3 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                     />
                   </div>
                 </div>
@@ -365,45 +374,50 @@ const StudentForm: React.FC<StudentFormModalProps> = () => {
                 <h4 className="text-sm font-medium text-gray-900 mb-4">Informations académiques</h4>
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Filière *
-                    </label>
-                    <select
+                    
+                    <Select
                       title='filière'
+                      labelText='Filière'
+                      indication='Sélectionner'
+                      requis
                       name="filiere"
                       value={formData.filiere}
                       onChange={handleChange}
                       
-                      className="block w-full rounded-md border-0 py-2 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                    >
-                      <option value="">Sélectionner</option>
-                      <option value="Informatique">Informatique</option>
-                      <option value="Mathématiques">Mathématiques</option>
-                      <option value="Physique">Physique</option>
-                      <option value="Chimie">Chimie</option>
-                      <option value="Biologie">Biologie</option>
-                    </select>
+                      styleSelect="block w-full rounded-md border-0 py-2 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    
+                     options={[
+                        { id: 1, value: "Informatique", label: "Informatique" },
+                        { id: 2, value: "Mathématiques", label: "Mathématiques" },
+                        { id: 3, value: "Physique", label: "Physique" },
+                        { id: 4, value: "Chimie", label: "Chimie" },
+                        { id: 5, value: "Biologie", label: "Biologie" }  
+                      ]}
+                    
+                    />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Niveau *
-                    </label>
-                    <select
+                   
+                    <Select
                       title='niveau'
                       name="niveau"
+                      labelText='Niveau'
+                      indication='Sélectionner'
                       value={formData.niveau}
                       onChange={handleChange}
-                      required
-                      className="block w-full rounded-md border-0 py-2 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                    >
-                      <option value="">Sélectionner</option>
-                      <option value="L1">Licence 1</option>
-                      <option value="L2">Licence 2</option>
-                      <option value="L3">Licence 3</option>
-                      <option value="M1">Master 1</option>
-                      <option value="M2">Master 2</option>
-                    </select>
+                      requis
+                      styleSelect="block w-full rounded-md border-0 py-2 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                      
+                      options={[
+                        { id: 1, value: "L1", label: "Licence 1" },
+                        { id: 2, value: "L2", label: "Licence 2" },
+                        { id: 3, value: "L3", label: "Licence 3" },
+                        { id: 4, value: "M1", label: "Master 1" },
+                        { id: 5, value: "M2", label: "Master 2" }  
+                      ]}
+                     
+                    />
                   </div>
 
                   {/* {isEdit && (
@@ -433,17 +447,19 @@ const StudentForm: React.FC<StudentFormModalProps> = () => {
           {/* Footer */}
           <div className="border-t border-gray-200 bg-gray-50 px-6 py-4">
             <div className="flex justify-end gap-3">
-              <button
+              <Button
+                variant='perso'
                 type="button"
-                onClick={handleClear}
-                className="rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+                action={handleClear}
+                supStyle="rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
               >
               Vider les champs
-              </button>
-              <button
+              </Button>
+              <Button
                 type="submit"
+                variant='perso'
                 disabled={state.processing}
-                className="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:opacity-50"
+                supStyle="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:opacity-50"
               >
                 {state.processing ? (
                   <>
@@ -456,7 +472,7 @@ const StudentForm: React.FC<StudentFormModalProps> = () => {
                     {isEdit ? 'Mettre à jour' : 'Créer'}
                   </>
                 )}
-              </button>
+              </Button>
             </div>
           </div>
         </form>

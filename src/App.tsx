@@ -15,6 +15,11 @@ import MatiereContentLayout from './Pages/Layouts/MatiereLayout';
 import MatieresList from './Pages/Contents/Matieres/MatieresList';
 import MatiereDetails from './Pages/Contents/Matieres/MatiereDetails';
 import MatiereForm from './Pages/Contents/Matieres/MatiereForm';
+import CandidatureContentLayout from './Pages/Layouts/candidatureLayout';
+import AcademicRssourceContentLayout from './Pages/Layouts/AcademicRessourceLayout';
+import GestionAcademicContentLayout from './Pages/Layouts/GestionAcademicLayout';
+import AdministrationContentLayout from './Pages/Layouts/AdministrationLayout';
+import Users from './Pages/Contents/Administratration/Users';
 
 const App: React.FC = () => {
   const location = useLocation();
@@ -50,7 +55,28 @@ const App: React.FC = () => {
                 <Route path=':id' element={<MatiereDetails />} />
               </Route>
 
-              
+              {/* Route imbriquée pour la gestion des candidatures */}
+              <Route path="candidats" element={<CandidatureContentLayout/>}>
+              </Route>
+
+              {/* Route imbriquee pour la gestion Academic resources */}
+              <Route path='academic-resources' element={<AcademicRssourceContentLayout/>}>
+              </Route>
+
+              {/* Route imbriquee pour la Gestion Académique */}
+              <Route path='academic' element={<GestionAcademicContentLayout/>}>
+              </Route>
+
+             {/* Route imbriquee pour la Gestion de l'Administration */}
+             <Route path='admin' element={<AdministrationContentLayout/>}>
+                <Route path='users' element={<Users />} />
+             </Route>
+             
+             {/* Route imbriquee pour la Gestion des courses */}
+             <Route path='courses' element={<CoursesContentLayout/>}>
+               <Route path='create' element={<CourseForm />} />
+             </Route>
+
               {/* <Route path="*" element={<Page404 />} /> */}
             </Route>
 

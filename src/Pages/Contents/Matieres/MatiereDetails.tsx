@@ -181,9 +181,10 @@ const MatiereDetails: React.FC = () => {
       <div className="bg-white shadow rounded-lg">
         <div className="border-b border-gray-200">
           <nav className="flex -mb-px">
-            <button
-              onClick={() => setActiveTab('infos')}
-              className={clsx(
+            <Button
+              variant="perso"
+              action={() => setActiveTab('infos')}
+              supStyle={clsx(
                 'px-6 py-4 text-sm font-medium border-b-2 transition-colors',
                 activeTab === 'infos'
                   ? 'border-indigo-500 text-indigo-600'
@@ -192,10 +193,11 @@ const MatiereDetails: React.FC = () => {
             >
               <i className="ri-information-line mr-2"></i>
               Informations
-            </button>
-            <button
-              onClick={() => setActiveTab('etudiants')}
-              className={clsx(
+            </Button>
+            <Button
+              variant="perso"
+              action={() => setActiveTab('etudiants')}
+              supStyle={clsx(
                 'px-6 py-4 text-sm font-medium border-b-2 transition-colors',
                 activeTab === 'etudiants'
                   ? 'border-indigo-500 text-indigo-600'
@@ -204,10 +206,11 @@ const MatiereDetails: React.FC = () => {
             >
               <i className="ri-user-line mr-2"></i>
               Étudiants
-            </button>
-            <button
-              onClick={() => setActiveTab('seances')}
-              className={clsx(
+            </Button>
+            <Button
+              variant="perso"
+              action={() => setActiveTab('seances')}
+              supStyle={clsx(
                 'px-6 py-4 text-sm font-medium border-b-2 transition-colors',
                 activeTab === 'seances'
                   ? 'border-indigo-500 text-indigo-600'
@@ -216,10 +219,11 @@ const MatiereDetails: React.FC = () => {
             >
               <i className="ri-calendar-line mr-2"></i>
               Séances
-            </button>
-            <button
-              onClick={() => setActiveTab('stats')}
-              className={clsx(
+            </Button>
+            <Button
+              variant="perso"
+              action={() => setActiveTab('stats')}
+              supStyle={clsx(
                 'px-6 py-4 text-sm font-medium border-b-2 transition-colors',
                 activeTab === 'stats'
                   ? 'border-indigo-500 text-indigo-600'
@@ -228,7 +232,7 @@ const MatiereDetails: React.FC = () => {
             >
               <i className="ri-bar-chart-line mr-2"></i>
               Statistiques
-            </button>
+            </Button>
           </nav>
         </div>
 

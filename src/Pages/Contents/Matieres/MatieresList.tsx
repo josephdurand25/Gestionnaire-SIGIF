@@ -5,6 +5,8 @@ import type { IMatiere, IMatiereFilters, IMatiereWithDetails } from '../../../ty
 import { useMatieres } from '../../../Contexts/MatiereContext';
 import type { JourSemaine, TypeCours } from '../../../types/IGeneral';
 import { Button } from '../../components/Button';
+import { Input } from '../../components/Input';
+import { Select } from '../../components/Select';
 const MatieresList: React.FC = () => {
   const { state, actions } = useMatieres();
   const [filters, setFilters] = useState<IMatiereFilters>({});
@@ -81,15 +83,16 @@ const MatieresList: React.FC = () => {
           </p>
         </div>
         <div className="mt-4 sm:mt-0 flex gap-3">
-          <button
-            onClick={() => setShowFilters(!showFilters)}
-            className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
+          <Button
+            variant='perso'
+            action={() => setShowFilters(!showFilters)}
+            supStyle="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
           >
             <i className="ri-filter-line mr-2"></i>
             Filtres
             {showFilters && <i className="ri-arrow-up-s-line ml-2"></i>}
             {!showFilters && <i className="ri-arrow-down-s-line ml-2"></i>}
-          </button>
+          </Button>
           <Button
             variant='perso'
             icon='ri-add-line mr-1 font-bold'
@@ -108,147 +111,146 @@ const MatieresList: React.FC = () => {
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {/* Recherche */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Recherche
-              </label>
-              <input
+              <Input
+                name="Recherche"
+                id="Recherche"
+                labelText=" Recherche"
                 type="text"
                 value={filters.search || ''}
                 onChange={(e) => handleFilterChange('search', e.target.value)}
                 placeholder="Nom ou code de la matière..."
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                inputStyle="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
               />
             </div>
 
             {/* Type de cours */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Type de cours
-              </label>
-              <select
+              <Select
+                labelText="Type de cours "
+                indication='choisissez un type'
                 title='type_cours'
                 value={filters.type_cours || ''}
                 onChange={(e) => handleFilterChange('type_cours', e.target.value as TypeCours)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-              >
-                <option value="">Tous</option>
+                styleSelect="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              
+                options = {[
+                  {id:2, value:"CM", label:"Magistral"},
+                  {id:3, value:"TD", label:"Dirigés"},
+                  {id:4, value:"TP", label:"Travaux Pratiques (TP)"},
+                  {id:5, value:"PROJET", label:"Projet"},
+                  {id:6, value:"STAGE", label:"Stage"}
+                  ]} 
+                  />
+                {/* <option value="">Tous</option>
                 <option value="CM">Cours Magistral (CM)</option>
                 <option value="TD">Travaux Dirigés (TD)</option>
                 <option value="TP">Travaux Pratiques (TP)</option>
                 <option value="PROJET">Projet</option>
-                <option value="STAGE">Stage</option>
-              </select>
+                <option value="STAGE">Stage</option> */}
+              
             </div>
 
             {/* UE */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Unité d'Enseignement
-              </label>
-              <input
+              <Input
+                labelText=" Unité d'Enseignement"
                 type="text"
                 value={filters.ue_code || ''}
                 onChange={(e) => handleFilterChange('ue_code', e.target.value)}
                 placeholder="Code UE..."
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                inputStyle="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
               />
             </div>
 
             {/* Enseignant */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Enseignant
-              </label>
-              <input
+              <Input
+                labelText=" Enseignant"
                 type="number"
                 value={filters.enseignant_id || ''}
                 onChange={(e) => handleFilterChange('enseignant_id', e.target.value ? Number(e.target.value) : undefined)}
                 placeholder="ID Enseignant..."
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                inputStyle="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
               />
             </div>
 
             {/* Jour */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Jour
-              </label>
-              <select
+              <Select
+                labelText="Jour "
+                indication='Tous'
                 title='jour'
                 value={filters.jour || ''}
                 onChange={(e) => handleFilterChange('jour', e.target.value as JourSemaine)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-              >
-                <option value="">Tous</option>
-                <option value="LUNDI">Lundi</option>
-                <option value="MARDI">Mardi</option>
-                <option value="MERCREDI">Mercredi</option>
-                <option value="JEUDI">Jeudi</option>
-                <option value="VENDREDI">Vendredi</option>
-                <option value="SAMEDI">Samedi</option>
-              </select>
+                styleSelect="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              
+                options = {[
+                  {id:1, value:"LUNDI", label:"Lundi"},
+                  {id:2, value:"MARDI", label:"Mardi"},
+                  {id:3, value:"MERCREDI", label:"Mercredi"},
+                  {id:4, value:"JEUDI", label:"Jeudi"},
+                  {id:5, value:"VENDREDI", label:"Vendredi"},
+                  {id:6, value:"SAMEDI", label:"Samedi"},
+                ]}
+              />
             </div>
 
             {/* Salle */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Salle
-              </label>
-              <input
+              <Input
+                labelText=" Salle"
                 type="text"
                 value={filters.salle_code || ''}
                 onChange={(e) => handleFilterChange('salle_code', e.target.value)}
                 placeholder="Code salle..."
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                inputStyle="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
               />
             </div>
 
             {/* Crédits min */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Crédits min
-              </label>
-              <input
+              <Input
+                labelText=" Crédits min"
                 type="number"
                 min="0"
                 value={filters.credits_min || ''}
                 onChange={(e) => handleFilterChange('credits_min', e.target.value ? Number(e.target.value) : undefined)}
                 placeholder="0"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                inputStyle="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
               />
             </div>
 
             {/* Volume horaire min */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Volume horaire min
-              </label>
-              <input
+              <Input
+                labelText=" Volume horaire min"
                 type="number"
                 min="0"
                 value={filters.volume_horaire_min || ''}
                 onChange={(e) => handleFilterChange('volume_horaire_min', e.target.value ? Number(e.target.value) : undefined)}
                 placeholder="0"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                inputStyle="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
               />
             </div>
           </div>
 
           <div className="mt-4 flex gap-3">
-            <button
-              onClick={handleApplyFilters}
-              className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700"
+            <Button
+              variant='perso'
+              action={handleApplyFilters}
+              supStyle="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700"
             >
               <i className="ri-search-line mr-2"></i>
               Appliquer les filtres
-            </button>
-            <button
-              onClick={handleResetFilters}
-              className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
+            </Button>
+            <Button
+              variant='perso'
+              action={handleResetFilters}
+              supStyle="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
             >
               <i className="ri-restart-line mr-2"></i>
               Réinitialiser
-            </button>
+            </Button>
           </div>
         </div>
       )}
@@ -266,13 +268,14 @@ const MatieresList: React.FC = () => {
             <p className="mt-2 text-sm text-gray-500">
               Commencez par créer une nouvelle matière
             </p>
-            <button
-              onClick={() => navigate('/matieres/create')}
-              className="mt-6 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700"
+            <Button
+              variant='perso'
+              action={() => navigate('/matieres/create')}
+              supStyle="mt-6 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700"
             >
               <i className="ri-add-line mr-2"></i>
               Créer une matière
-            </button>
+            </Button>
           </div>
         ) : (
           <>
@@ -425,20 +428,22 @@ const MatieresList: React.FC = () => {
             {state.pagination.totalPages > 1 && (
               <div className="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
                 <div className="flex-1 flex justify-between sm:hidden">
-                  <button
-                    onClick={() => handlePageChange(state.pagination.page - 1)}
+                  <Button
+                    variant='perso'
+                    action={() => handlePageChange(state.pagination.page - 1)}
                     disabled={state.pagination.page === 1}
-                    className="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50"
+                    supStyle="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50"
                   >
                     Précédent
-                  </button>
-                  <button
-                    onClick={() => handlePageChange(state.pagination.page + 1)}
+                  </Button>
+                  <Button
+                    variant='perso'
+                    action={() => handlePageChange(state.pagination.page + 1)}
                     disabled={state.pagination.page === state.pagination.totalPages}
-                    className="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50"
+                    supStyle="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50"
                   >
                     Suivant
-                  </button>
+                  </Button>
                 </div>
                 <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
                   <div>
@@ -459,10 +464,11 @@ const MatieresList: React.FC = () => {
                         <i className="ri-arrow-left-s-line"></i>
                       </Button>
                       {[...Array(state.pagination.totalPages)].map((_, i) => (
-                        <button
+                        <Button
+                          variant='perso'
                           key={i + 1}
-                          onClick={() => handlePageChange(i + 1)}
-                          className={clsx(
+                          action={() => handlePageChange(i + 1)}
+                          supStyle={clsx(
                             'relative inline-flex items-center px-4 py-2 border text-sm font-medium',
                             state.pagination.page === i + 1
                               ? 'z-10 bg-indigo-50 border-indigo-500 text-indigo-600'
@@ -470,15 +476,16 @@ const MatieresList: React.FC = () => {
                           )}
                         >
                           {i + 1}
-                        </button>
+                        </Button>
                       ))}
-                      <button
-                        onClick={() => handlePageChange(state.pagination.page + 1)}
+                      <Button
+                        variant='perso'
+                        action={() => handlePageChange(state.pagination.page + 1)}
                         disabled={state.pagination.page === state.pagination.totalPages}
-                        className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50"
+                        supStyle="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50"
                       >
                         <i className="ri-arrow-right-s-line"></i>
-                      </button>
+                      </Button>
                     </nav>
                   </div>
                 </div>
