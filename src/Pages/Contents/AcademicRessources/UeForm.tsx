@@ -1,16 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import clsx from 'clsx';
-import type { TypeUE } from '../../../types/ICours';
-import { useUE } from '../../../Contexts/UEContext';
-import type { IUniteEnseignement, IUniteEnseignementCreate } from '../../../types/ICours';
+import type {  IUniteEnseignementCreate } from '../../../types/ICours';
 import { Input } from '../../components/Input';
-import { Button } from '../../components/Button';
+import { TextArea } from '../../components/Textarea';
+import { useAcademicResources } from '../../../Contexts/AcademicResourcesContext';
 
 const UEForm: React.FC = () => {
   const { code } = useParams<{ code: string }>();
   const navigate = useNavigate();
-  const { state, actions } = useUE();
+  const { state, actions } = useAcademicResources();
   const isEditMode = Boolean(code);
 
   const [formData, setFormData] = useState<Partial<IUniteEnseignementCreate>>({
@@ -396,7 +395,15 @@ const UEForm: React.FC = () => {
             <i className="ri-file-text-line text-indigo-600 mr-2"></i>
             Description
           </h2>
-
+            <TextArea
+              rows={4}
+              name="description"
+              labelText='Description'
+              value={formData.description}
+              onChange={handleChange}
+              placeholder="Décrivez les objectifs pédagogiques, le contenu et les compétences visées..."
+              styleLabletext="mt-1 block w-full px-3 py-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+            />
           <div>
             <label htmlFor="description" className="block text-sm font-medium text-gray-800 mb-1">
               Description de l'UE

@@ -1,9 +1,9 @@
 import React from 'react';
-import { Outlet, useLocation } from 'react-router';
+import { Outlet } from 'react-router';
 import { CoursesProvider } from '../../Contexts/CoursesContext';
 
 const AcademicRssourceContentLayout: React.FC = () => {
-  const location = useLocation();
+ 
 
   return (
     <div className="space-y-3">

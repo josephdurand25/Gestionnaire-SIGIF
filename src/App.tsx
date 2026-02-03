@@ -20,6 +20,7 @@ import AcademicRssourceContentLayout from './Pages/Layouts/AcademicRessourceLayo
 import GestionAcademicContentLayout from './Pages/Layouts/GestionAcademicLayout';
 import AdministrationContentLayout from './Pages/Layouts/AdministrationLayout';
 import Users from './Pages/Contents/Administratration/Users';
+import UEForm from './Pages/Contents/AcademicRessources/UeForm';
 
 const App: React.FC = () => {
   const location = useLocation();
@@ -61,6 +62,7 @@ const App: React.FC = () => {
 
               {/* Route imbriquee pour la gestion Academic resources */}
               <Route path='academic-resources' element={<AcademicRssourceContentLayout/>}>
+               <Route path='create' element={<UEForm/>}/>
               </Route>
 
               {/* Route imbriquee pour la Gestion Académique */}

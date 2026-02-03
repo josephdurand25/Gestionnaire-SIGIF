@@ -1,6 +1,5 @@
 import clsx from "clsx";
-import { Spinner } from "./Spiner";
-
+import { Spinner } from "./Spinner";
 interface Props {
     size?: "small" | "medium" | "large";
     variant?:
