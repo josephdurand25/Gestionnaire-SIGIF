@@ -90,6 +90,8 @@ export interface IUniteEnseignement {
   volume_horaire_total: number;    // INTEGER
   description?: string;            // TEXT
   created_at?: Date | string;
+  ue_groupe?: Partial<IGroupeUE>;            // TEXT
+  ue_groupe_code?: string;            // TEXT
   // Note: Pas de groupe_cours_code dans ta BDD - liaison via table intermédiaire ?
 }
 

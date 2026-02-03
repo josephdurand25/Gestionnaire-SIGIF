@@ -2,8 +2,6 @@ import React, { createContext, useCallback, useContext, useReducer, useMemo, typ
 import { handleApiError } from "../ConfigApp/errorHandle";
 import api from "../ConfigApp/apiConfigCommunication";
 import { useToast } from "./TaostContainer";
-import type { ApiResponseOk, IPaginationResult } from "../types/api";
-
 // ─────────────────────────── Types ─────────────────────────────
 
 // Unité d'Enseignement
