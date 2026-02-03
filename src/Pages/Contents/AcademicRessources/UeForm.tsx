@@ -5,6 +5,8 @@ import type {  IUniteEnseignementCreate } from '../../../types/ICours';
 import { Input } from '../../components/Input';
 import { TextArea } from '../../components/Textarea';
 import { useAcademicResources } from '../../../Contexts/AcademicResourcesContext';
+import { Button } from '../../components/Button';
+import type { TypeUE } from '../../../types/IGeneral';
 
 const UEForm: React.FC = () => {
   const { code } = useParams<{ code: string }>();
@@ -36,8 +38,11 @@ const UEForm: React.FC = () => {
   }, [code, isEditMode]);
 
   useEffect(() => {
-    if (isEditMode && state.selectedUE) {
-      setFormData(state.selectedUE);
+    if (isEditMode && state.selectedUE !== null) {
+      setFormData({
+        ...state.selectedUE,
+        description: state.selectedUE.description ?? undefined,
+      });
     }
   }, [state.selectedUE, isEditMode]);
 
@@ -62,7 +67,7 @@ const UEForm: React.FC = () => {
     if (name === 'credits' || name === 'volume_horaire_total') {
       finalValue = value ? Number(value) : undefined;
     } else if (name === 'coefficient') {
-      finalValue = value ? parseFloat(value) : undefined;
+      finalValue = value ? Number.parseFloat(value) : undefined;
     }
 
     setFormData(prev => ({ ...prev, [name]: finalValue }));
@@ -96,18 +101,13 @@ const UEForm: React.FC = () => {
     }
 
     // Groupe de cours
-    if (!formData.groupe_cours_code?.trim()) {
-      newErrors.groupe_cours_code = 'Le groupe de cours est requis';
+    if (!formData.ue_groupe_code?.trim()) {
+      newErrors.ue_groupe_code = 'Le groupe de cours est requis';
     }
 
     // Crédits
     if (!formData.credits || formData.credits < 1 || formData.credits > 30) {
       newErrors.credits = 'Les crédits doivent être entre 1 et 30';
-    }
-
-    // Coefficient
-    if (formData.coefficient !== undefined && (formData.coefficient < 0 || formData.coefficient > 2)) {
-      newErrors.coefficient = 'Le coefficient doit être entre 0 et 2';
     }
 
     // Volume horaire
@@ -127,9 +127,7 @@ const UEForm: React.FC = () => {
     }
 
     const ueData = {
-      ...formData,
-      coefficient: formData.coefficient || 1.0
-    } as IUniteEnseignementCreate;
+      ...formData,} as IUniteEnseignementCreate;
 
     if (isEditMode && code) {
       await actions.updateUE(code, ueData);
@@ -196,7 +194,7 @@ const UEForm: React.FC = () => {
       {/* En-tête */}
       <div className="bg-white shadow rounded-lg p-6">
         <div className="flex items-center">
-          <div className="flex-shrink-0">
+          <div className="shrink-0">
             <div className="h-12 w-12 rounded-lg bg-indigo-100 flex items-center justify-center">
               <i className="ri-folder-line text-2xl text-indigo-600"></i>
             </div>
@@ -219,8 +217,7 @@ const UEForm: React.FC = () => {
         {/* Informations de base */}
         <div className="bg-white shadow rounded-lg p-6">
           <h2 className="text-lg font-medium text-gray-900 mb-6 flex items-center">
-            <i className="ri-information-line text-indigo-600 mr-2"></i>
-            Informations de base
+            <i className="ri-information-line text-indigo-600 mr-2" /> Informations de base
           </h2>
 
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
@@ -302,7 +299,7 @@ const UEForm: React.FC = () => {
               <select
                 name="groupe_cours_code"
                 id="groupe_cours_code"
-                value={formData.groupe_cours_code}
+                value={formData.ue_groupe_code}
                 onChange={handleChange}
                 className={clsx(
                   'mt-1 block w-full px-3 py-3 border rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500',
@@ -326,8 +323,7 @@ const UEForm: React.FC = () => {
         {/* Crédits et Volume horaire */}
         <div className="bg-white shadow rounded-lg p-6">
           <h2 className="text-lg font-medium text-gray-900 mb-6 flex items-center">
-            <i className="ri-time-line text-indigo-600 mr-2"></i>
-            Crédits et Volume horaire
+            <i className="ri-time-line text-indigo-600 mr-2"></i> Crédits et Volume horaire
           </h2>
 
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
@@ -345,22 +341,6 @@ const UEForm: React.FC = () => {
               inputStyle="px-3 py-3"
               required
             />
-
-            {/* Coefficient */}
-            <Input 
-              labelText="Coefficient"
-              name="coefficient"
-              type="number"
-              min="0"
-              max="2"
-              step="0.1"
-              value={formData.coefficient?.toString()}
-              onChange={handleChange}
-              placeholder="Ex: 1.0"
-              error={errors.coefficient}
-              inputStyle="px-3 py-3"
-            />
-
             {/* Volume horaire */}
             <Input 
               labelText="Volume horaire total (heures)"
@@ -392,8 +372,7 @@ const UEForm: React.FC = () => {
         {/* Description */}
         <div className="bg-white shadow rounded-lg p-6">
           <h2 className="text-lg font-medium text-gray-900 mb-6 flex items-center">
-            <i className="ri-file-text-line text-indigo-600 mr-2"></i>
-            Description
+            <i className="ri-file-text-line text-indigo-600 mr-2"></i> Description
           </h2>
             <TextArea
               rows={4}
