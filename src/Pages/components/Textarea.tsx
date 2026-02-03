@@ -7,9 +7,10 @@ interface TextAreaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement
   labelText?: string;
   contenerStyle?: string;
   styleLabletext?: string;
+  styleTextareaInput?: string;
 }
 
-export const TextArea: React.FC<TextAreaProps> = ({ action ,error,requis, labelText, styleLabletext, rows, name,contenerStyle, placeholder, onChange, ...props }) => {
+export const TextArea: React.FC<TextAreaProps> = ({ action ,error,requis, labelText, styleLabletext,styleTextareaInput, rows, name,contenerStyle, placeholder, onChange, ...props }) => {
   return (
     <div className={`${contenerStyle}`}>
       {action && (<div className="flex justify-between items-center py-2 px-3 border-b dark:border-gray-600">
@@ -36,7 +37,7 @@ export const TextArea: React.FC<TextAreaProps> = ({ action ,error,requis, labelT
           <i className="w-5 h-5 font-bold ri-fullscreen-fill"></i>
         </button>
       </div>)}
-      <div className="py-2 px-4 bg-white rounded-b-lg dark:bg-gray-800">
+      <div className="py-2 px-4 bg-white rounded-b-lg ">
         {/* <label htmlFor={name} className="block tracking-wide text-gray-800 text-md font-bold first-letter:uppercase sr-only">{labelText}</label> */}
         <label className={`block tracking-wide ${error ? 'text-red-600': 'text-gray-800' }   text-md font-bold first-letter:uppercase ${styleLabletext}`} htmlFor={name}>
           { labelText } {requis && <span className="text-red-500">*</span>}
@@ -47,7 +48,7 @@ export const TextArea: React.FC<TextAreaProps> = ({ action ,error,requis, labelT
           rows={rows}
           placeholder={placeholder}
           onChange={onChange}
-          className={`block px-0 w-full text-sm text-gray-800 bg-white border-0 dark:bg-gray-800 focus:ring-0 dark:text-white dark:placeholder-gray-400`}
+          className={ `${styleTextareaInput ? styleTextareaInput : ' block px-0 w-full text-sm text-gray-800 bg-white border-0 focus:ring-0 dark:text-white dark:placeholder-gray-400'}`}
           {...props}
         />
         {error && <p className="text-red-600 text-xs font-semibold">{error}</p>}
