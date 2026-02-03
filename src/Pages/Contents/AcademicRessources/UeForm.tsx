@@ -17,10 +17,10 @@ const UEForm: React.FC = () => {
     nom: '',
     type: 'OBLIGATOIRE',
     credits: 6,
-    coefficient: 1.0,
+    // coefficient: 1.0,
     volume_horaire_total: 50,
     description: '',
-    groupe_cours_code: ''
+    // groupe_cours_code: ''
   });
 
   const [errors, setErrors] = useState<any>({});

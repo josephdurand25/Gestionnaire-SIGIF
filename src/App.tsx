@@ -1,4 +1,4 @@
-import { createBrowserRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom';
+import {  Route, Routes, useLocation } from 'react-router-dom';
 import DashboardLayout from './Pages/Layouts/DashboardLayout';
 import { ToastProvider } from './Contexts/TaostContainer';
 import { useEffect } from 'react';
@@ -6,21 +6,19 @@ import Dashboard from './Pages/Contents/Dashboard';
 import StudentsList from './Pages/Contents/students/StudentsList';
 import Statistics from './Pages/Contents/Statistics';
 import StudentForm from './Pages/Contents/students/FormDataStudent';
-import CoursesList from './Pages/Contents/Courses/List';
 import CoursesContentLayout from './Pages/Layouts/CourseLayout';
 import CourseForm from './Pages/Contents/Courses/Form';
-import CourseDetails from './Pages/Contents/Courses/Details';
 import StudentDetails from './Pages/Contents/students/StudentDetail';
 import MatiereContentLayout from './Pages/Layouts/MatiereLayout';
 import MatieresList from './Pages/Contents/Matieres/MatieresList';
 import MatiereDetails from './Pages/Contents/Matieres/MatiereDetails';
 import MatiereForm from './Pages/Contents/Matieres/MatiereForm';
-import CandidatureContentLayout from './Pages/Layouts/candidatureLayout';
 import AcademicRssourceContentLayout from './Pages/Layouts/AcademicRessourceLayout';
 import GestionAcademicContentLayout from './Pages/Layouts/GestionAcademicLayout';
 import AdministrationContentLayout from './Pages/Layouts/AdministrationLayout';
 import Users from './Pages/Contents/Administratration/Users';
 import UEForm from './Pages/Contents/AcademicRessources/UeForm';
+import CandidatureContentLayout from './Pages/Layouts/CandidatureLayout';
 
 const App: React.FC = () => {
   const location = useLocation();

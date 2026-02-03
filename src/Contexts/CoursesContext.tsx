@@ -9,7 +9,7 @@ import api from '../ConfigApp/apiConfigCommunication';
 
 type CoursesAction =
   | { type: 'SET_COURSES'; payload: ICours[] }
-  | { type: 'SET_COURSES_WITH_STATS'; payload: ICoursWithEnrollments[] }
+  // | { type: 'SET_COURSES_WITH_STATS'; payload: ICoursWithEnrollments[] }
   | { type: 'SET_SELECTED_COURSE'; payload: ICours | null }
   | { type: 'SET_PAGINATION'; payload: any }
   | { type: 'SET_PROCESSING'; payload: boolean }
@@ -29,7 +29,7 @@ interface ICoursesContext {
     deleteCourse: (id: number) => Promise<void>;
     
     // Statistiques
-    fetchCoursesWithStats: () => Promise<void>;
+    // fetchCoursesWithStats: () => Promise<void>;
     
     // Utilitaires
     setSelectedCourse: (course: ICours | null) => void;
@@ -44,7 +44,7 @@ interface ICoursesContext {
 const initialState: ICoursesState = {
   courses: [],
   selectedCourse: null,
-  coursesWithStats: [],
+  // coursesWithStats: [],
   processing: false,
   success: false,
   message: null,
@@ -66,8 +66,8 @@ const coursesReducer = (state: ICoursesState, action: CoursesAction): ICoursesSt
     case 'SET_COURSES':
       return { ...state, courses: action.payload };
     
-    case 'SET_COURSES_WITH_STATS':
-      return { ...state, coursesWithStats: action.payload };
+    // case 'SET_COURSES_WITH_STATS':
+    //   return { ...state, coursesWithStats: action.payload };
     
     case 'SET_SELECTED_COURSE':
       return { ...state, selectedCourse: action.payload };
@@ -250,20 +250,20 @@ export const CoursesProvider: React.FC<{ children: ReactNode }> = ({ children })
     }
   }, [state.pagination, fetchCourses, handleApiError]);
 
-  const fetchCoursesWithStats = useCallback(async () => {
-    dispatch({ type: 'SET_PROCESSING', payload: true });
-    dispatch({ type: 'SET_ERRORS', payload: null });
+  // const fetchCoursesWithStats = useCallback(async () => {
+  //   dispatch({ type: 'SET_PROCESSING', payload: true });
+  //   dispatch({ type: 'SET_ERRORS', payload: null });
 
-    try {
-      const response = await api.get<ICoursWithEnrollments[]>('/api/courses/stats');
-      dispatch({ type: 'SET_COURSES_WITH_STATS', payload: response.data });
-      dispatch({ type: 'SET_SUCCESS', payload: true });
-    } catch (error: any) {
-      handleApiError(error);
-    } finally {
-      dispatch({ type: 'SET_PROCESSING', payload: false });
-    }
-  }, [handleApiError]);
+  //   try {
+  //     const response = await api.get<ICoursWithEnrollments[]>('/api/courses/stats');
+  //     dispatch({ type: 'SET_COURSES_WITH_STATS', payload: response.data });
+  //     dispatch({ type: 'SET_SUCCESS', payload: true });
+  //   } catch (error: any) {
+  //     handleApiError(error);
+  //   } finally {
+  //     dispatch({ type: 'SET_PROCESSING', payload: false });
+  //   }
+  // }, [handleApiError]);
 
   const setSelectedCourse = useCallback((course: ICours | null) => {
     dispatch({ type: 'SET_SELECTED_COURSE', payload: course });
@@ -285,7 +285,6 @@ export const CoursesProvider: React.FC<{ children: ReactNode }> = ({ children })
       createCourse,
       updateCourse,
       deleteCourse,
-      fetchCoursesWithStats,
       setSelectedCourse,
       resetState
     }

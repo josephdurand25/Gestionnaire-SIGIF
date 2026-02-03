@@ -325,35 +325,37 @@ const academicResourcesReducer = (state: AcademicResourcesState, action: Academi
 
 interface IAcademicResourcesContext {
   state: AcademicResourcesState;
-  dispatch: React.Dispatch<AcademicResourcesAction>;
-  
-  // UE
-  fetchUEs: (page?: number, limit?: number) => Promise<void>;
-  fetchUEByCode: (code: string) => Promise<void>;
-  createUE: (data: Partial<IUniteEnseignement>) => Promise<void>;
-  updateUE: (code: string, data: Partial<IUniteEnseignement>) => Promise<void>;
-  deleteUE: (code: string) => Promise<void>;
-  
-  // Filière
-  fetchFilieres: (page?: number, limit?: number) => Promise<void>;
-  fetchFiliereByCode: (code: string) => Promise<void>;
-  createFiliere: (data: Partial<IFiliere>) => Promise<void>;
-  updateFiliere: (code: string, data: Partial<IFiliere>) => Promise<void>;
-  deleteFiliere: (code: string) => Promise<void>;
-  
-  // Groupe UE
-  fetchGroupesUE: (page?: number, limit?: number) => Promise<void>;
-  fetchGroupeUEById: (id: number) => Promise<void>;
-  createGroupeUE: (data: Partial<IGroupeUE>) => Promise<void>;
-  updateGroupeUE: (id: number, data: Partial<IGroupeUE>) => Promise<void>;
-  deleteGroupeUE: (id: number) => Promise<void>;
-  
-  // Common
-  fetchAcademicStats: () => Promise<void>;
-  setFilters: (filters: IAcademicResourcesFilters) => void;
-  setSearchTerm: (term: string) => void;
-  resetFilters: () => void;
-  toggleModal: (modal: keyof ModalStates, isOpen: boolean) => void;
+  actions: {
+    dispatch: React.Dispatch<AcademicResourcesAction>;
+    
+    // UE
+    fetchUEs: (page?: number, limit?: number) => Promise<void>;
+    fetchUEByCode: (code: string) => Promise<void>;
+    createUE: (data: Partial<IUniteEnseignement>) => Promise<void>;
+    updateUE: (code: string, data: Partial<IUniteEnseignement>) => Promise<void>;
+    deleteUE: (code: string) => Promise<void>;
+    
+    // Filière
+    fetchFilieres: (page?: number, limit?: number) => Promise<void>;
+    fetchFiliereByCode: (code: string) => Promise<void>;
+    createFiliere: (data: Partial<IFiliere>) => Promise<void>;
+    updateFiliere: (code: string, data: Partial<IFiliere>) => Promise<void>;
+    deleteFiliere: (code: string) => Promise<void>;
+    
+    // Groupe UE
+    fetchGroupesUE: (page?: number, limit?: number) => Promise<void>;
+    fetchGroupeUEById: (id: number) => Promise<void>;
+    createGroupeUE: (data: Partial<IGroupeUE>) => Promise<void>;
+    updateGroupeUE: (id: number, data: Partial<IGroupeUE>) => Promise<void>;
+    deleteGroupeUE: (id: number) => Promise<void>;
+    
+    // Common
+    fetchAcademicStats: () => Promise<void>;
+    setFilters: (filters: IAcademicResourcesFilters) => void;
+    setSearchTerm: (term: string) => void;
+    resetFilters: () => void;
+    toggleModal: (modal: keyof ModalStates, isOpen: boolean) => void;
+  }
 }
 
 const AcademicResourcesContext = createContext<IAcademicResourcesContext | undefined>(undefined);
@@ -746,27 +748,29 @@ export const AcademicResourcesProvider: React.FC<{ children: ReactNode }> = ({ c
   const value: IAcademicResourcesContext = useMemo(
     () => ({
       state,
-      dispatch,
-      fetchUEs,
-      fetchUEByCode,
-      createUE,
-      updateUE,
-      deleteUE,
-      fetchFilieres,
-      fetchFiliereByCode,
-      createFiliere,
-      updateFiliere,
-      deleteFiliere,
-      fetchGroupesUE,
-      fetchGroupeUEById,
-      createGroupeUE,
-      updateGroupeUE,
-      deleteGroupeUE,
-      fetchAcademicStats,
-      setFilters,
-      setSearchTerm,
-      resetFilters,
-      toggleModal,
+      actions: {
+        dispatch,
+        fetchUEs,
+        fetchUEByCode,
+        createUE,
+        updateUE,
+        deleteUE,
+        fetchFilieres,
+        fetchFiliereByCode,
+        createFiliere,
+        updateFiliere,
+        deleteFiliere,
+        fetchGroupesUE,
+        fetchGroupeUEById,
+        createGroupeUE,
+        updateGroupeUE,
+        deleteGroupeUE,
+        fetchAcademicStats,
+        setFilters,
+        setSearchTerm,
+        resetFilters,
+        toggleModal,
+      }
     }),
     [state, fetchUEs, fetchUEByCode, createUE, updateUE, deleteUE, fetchFilieres, fetchFiliereByCode, createFiliere, updateFiliere, deleteFiliere, fetchGroupesUE, fetchGroupeUEById, createGroupeUE, updateGroupeUE, deleteGroupeUE, fetchAcademicStats, setFilters, setSearchTerm, resetFilters, toggleModal]
   );
