@@ -19,7 +19,7 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarExpanded, toggleSidebarExpande
   const navigation = menuData;
 
   return (
-    <div className="min-w-fit">
+    <>
       {/* Sidebar backdrop (mobile only) */}
       <div
         className={`fixed inset-0 bg-gray-900 bg-opacity-30 z-40 lg:hidden lg:z-auto transition-opacity duration-200 ${
@@ -269,7 +269,7 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarExpanded, toggleSidebarExpande
             </div>
           </div>
         </div>
-    </div>
+    </>
   );
 }
 
