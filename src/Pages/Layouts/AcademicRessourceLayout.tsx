@@ -1,6 +1,6 @@
 import React from 'react';
 import { Outlet } from 'react-router';
-import { CoursesProvider } from '../../Contexts/CoursesContext';
+import { AcademicResourcesProvider } from '../../Contexts/AcademicResourcesContext';
 
 const AcademicRssourceContentLayout: React.FC = () => {
  
@@ -9,9 +9,9 @@ const AcademicRssourceContentLayout: React.FC = () => {
     <div className="space-y-3">
         {/* Contenu des sous-routes */}
         <div className="w-full rounded-lg  p-1 max-h-[85vh] overflow-y-auto">
-            <CoursesProvider>
+            <AcademicResourcesProvider>
                 <Outlet /> 
-            </CoursesProvider>
+            </AcademicResourcesProvider>
         </div>
 
     </div>
