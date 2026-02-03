@@ -124,7 +124,7 @@ export const Button = ({
                     {variant === "accent" || variant === "ico" ? (
                         <Spinner size="small" variant="white" />
                     ) : (
-                        <Spinner size="small" />
+                        <Spinner size="small" variant="white" />
                     )}
                 </div>
             )}
