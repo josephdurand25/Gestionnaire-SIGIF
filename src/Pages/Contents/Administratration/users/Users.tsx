@@ -1,7 +1,12 @@
 import React from 'react'
-import { Button } from '../../components/Button'
-import { Input } from '../../components/Input';
-import { Select } from '../../components/Select';
+import { Button } from '../../../components/Button'
+// import { Input } from '../../components/Input';
+import { Select } from '../../../components/Select';
+import PageMeta from '../../../components/common/PageMeta';
+import PageBread from '../../../components/common/PageBread';
+import UserMetaCard from './UserMetaCard';
+import UserInfoCard from './userInfoCard';
+import UserAddressCard from './userAddressCard';
 
 
 function Users() {
@@ -22,12 +27,22 @@ function Users() {
   return (
     <div className="">
        <div className="space-y-6">
-    <div className="space-y-1">
-      <h1 className="text-xl font-bold tracking-tight">Paramètres</h1>
-      <p className="text-sm">gerer vos preferences d'application et autres</p>
-    </div>
-
-    <div className="bg-white p-6 rounded-lg shadow-md space-y-6">
+        <PageMeta
+        title="React.js Profile Dashboard "
+        description="This is React.js Profile Dashboard  "
+      />
+      <PageBread pageTitle="User" />
+      <div className="rounded-2xl border border-gray-200 bg-white p-5  lg:p-6">
+        <h3 className="mb-5 text-lg font-semibold text-gray-800 dark:text-gray/90 lg:mb-7">
+          Profile
+        </h3>
+        <div className="space-y-6">
+          <UserMetaCard />
+          <UserInfoCard />
+          <UserAddressCard />
+        </div>
+      </div>
+    {/* <div className="bg-white p-6 rounded-lg shadow-md space-y-6">
       <div className="space-y-2">
         <h2 className="text-lg font-semibold">Paramettres de profil</h2>
       </div>
@@ -64,9 +79,9 @@ function Users() {
             variant='slate'
             name='saveChanges'
             size='small'
-        >Save Changes</Button>
+        >Save</Button>
       </div>
-    </div>
+    </div> */}
 
     <div className="bg-white p-6 rounded-lg shadow-md space-y-6">
       <div className="space-y-2">

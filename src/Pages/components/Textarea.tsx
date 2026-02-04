@@ -11,6 +11,9 @@ interface TextAreaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement
 }
 
 export const TextArea: React.FC<TextAreaProps> = ({ action ,error,requis, labelText, styleLabletext,styleTextareaInput, rows, name,contenerStyle, placeholder, onChange, ...props }) => {
+    
+  const StylePersoTexarea = "mt-1 block w-full px-3 py-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+    
   return (
     <div className={`${contenerStyle}`}>
       {action && (<div className="flex justify-between items-center py-2 px-3 border-b dark:border-gray-600">
@@ -48,7 +51,7 @@ export const TextArea: React.FC<TextAreaProps> = ({ action ,error,requis, labelT
           rows={rows}
           placeholder={placeholder}
           onChange={onChange}
-          className={ `${styleTextareaInput ? styleTextareaInput : ' block px-0 w-full text-sm text-gray-800 bg-white border-0 focus:ring-0 dark:text-white dark:placeholder-gray-400'}`}
+          className={ `${styleTextareaInput ? StylePersoTexarea : ' block px-0 w-full text-sm text-gray-800 bg-white border-0 focus:ring-0 dark:text-white dark:placeholder-gray-400'}`}
           {...props}
         />
         {error && <p className="text-red-600 text-xs font-semibold">{error}</p>}

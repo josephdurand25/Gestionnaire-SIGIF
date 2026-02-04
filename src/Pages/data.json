@@ -1,0 +1,20 @@
+{
+    "user":[
+        {
+          "id":1,
+      "first_name": "mouusok",
+      "last_name": "tiaha",
+      "phone": "691653712",
+      "email":"tiahafranck596@gmail.com",
+      "pays":"cameroun",
+      "ville":"yaunde",
+      "bio":"team_manager",
+      "code_postal":"ert_2345",
+      "tax_id":"as456838",
+      "profileImage": " ",
+       "name": "Franck Tiaha"  ,
+       "Address": "yaounde, cameroun"
+    }
+
+    ]
+}

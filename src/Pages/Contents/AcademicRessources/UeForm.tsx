@@ -376,30 +376,17 @@ const UEForm: React.FC = () => {
           </h2>
             <TextArea
               rows={4}
+              contenerStyle="block text-sm font-medium text-gray-800 mb-1"
               name="description"
               labelText='Description'
               value={formData.description}
               onChange={handleChange}
               placeholder="Décrivez les objectifs pédagogiques, le contenu et les compétences visées..."
-              styleLabletext="mt-1 block w-full px-3 py-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-            />
-          <div>
-            <label htmlFor="description" className="block text-sm font-medium text-gray-800 mb-1">
-              Description de l'UE
-            </label>
-            <textarea
-              name="description"
-              id="description"
-              rows={4}
-              value={formData.description}
-              onChange={handleChange}
-              placeholder="Décrivez les objectifs pédagogiques, le contenu et les compétences visées..."
-              className="mt-1 block w-full px-3 py-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              styleTextareaInput="mt-1 block w-full px-3 py-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
             />
             <p className="mt-1 text-sm text-gray-500">
               Cette description sera visible par les étudiants lors de l'inscription
             </p>
-          </div>
         </div>
 
         {/* Messages d'erreur globaux */}

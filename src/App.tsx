@@ -16,7 +16,7 @@ import MatiereForm from './Pages/Contents/Matieres/MatiereForm';
 import AcademicRssourceContentLayout from './Pages/Layouts/AcademicRessourceLayout';
 import GestionAcademicContentLayout from './Pages/Layouts/GestionAcademicLayout';
 import AdministrationContentLayout from './Pages/Layouts/AdministrationLayout';
-import Users from './Pages/Contents/Administratration/Users';
+import Users from './Pages/Contents/Administratration/users/Users';
 import UEForm from './Pages/Contents/AcademicRessources/UeForm';
 import CandidatureContentLayout from './Pages/Layouts/CandidatureLayout';
 
